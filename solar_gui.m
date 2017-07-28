@@ -10,7 +10,7 @@ set(0,'DefaultFigureWindowStyle','normal')
 ... *reverse by using "normal"
 set(0,'DefaultFigureVisible','on');
 
-
+%% Tesing to see if Github is working
 
 %% Set Front Page
 % Set tabs and tab labels
