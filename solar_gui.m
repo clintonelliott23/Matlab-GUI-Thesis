@@ -30,7 +30,7 @@ Yorigin = (MaxMonitorheight-MaxWindowY)/2;
 TabOffset = 0; % This value offsets the tabs inside the figure.
 ButtonHeight = 60;
 PanelHeight = MaxWindowY-ButtonHeight;
-ButtonWidth = round(MaxWindowX/NumTabs);
+ButtonWidth = round(MaxWindowX/NumTabs);%
 PanelWidth = MaxWindowX;
 % Set colour variables
 white = [1 1 1];
@@ -47,7 +47,7 @@ hTabFig = figure(...
 'DockControls','off',...
 'Color',white);
 
-%% Back Ground
+%% Back Ground 
 % (1)Create axis which covers the entire GUI workspace
 background_picture = axes('unit', 'pixels', 'position', [1,1,MaxWindowX,MaxWindowY]); 
 % (2)import the background image and show it on the axes
@@ -56,7 +56,6 @@ background_image = imread('homepage_solar_background.jpg'); imagesc(background_i
 set(background_picture,'handlevisibility','off','visible','off')
 % (4)Ensure all the other objects in the GUI are infront of the background
 uistack(background_picture, 'bottom');
-
 
 %% Define a cell array for panels and pushbutton handles, pushbutton labels and more
 TabHandles = cell(NumTabs,3); % rows are for eah tab + 2 additional data rows
