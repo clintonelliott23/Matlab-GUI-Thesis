@@ -9,7 +9,7 @@ set(0,'DefaultFigureWindowStyle','normal')
 ... *reverse by using "normal"
 set(0,'DefaultFigureVisible','on');
 
-%% Set Front Page
+%% Set Front Page and is home page
 % Set tabs and tab labels
 NumTabs = 4; % will have 7 tabs
 TabLabels = {'Inputs';'Outputs';'Graphs';'Interesting'};
