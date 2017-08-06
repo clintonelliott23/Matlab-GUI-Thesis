@@ -51,101 +51,6 @@ set(background_picture,'handlevisibility','off','visible','off')
 uistack(background_picture, 'bottom');
 
 %%%%%%%%%%%%%%%%%
-%% Orientation Image
-
-text_orientation_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
-    'String', 'Which orientation is your roof?', 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
-
-% Load Compass Image
-[x,map]=imread('compass.jpg'); I2=imresize(x, [280 300]);
-compass_image=uicontrol('style','pushbutton','units','normalized','position',[0.333 0.13 0.33 0.55],'cdata',I2);
-   
- % Orientations  Major     
-radio_north_button = uicontrol('Units', 'normalized', 'Position',[0.52 0.61 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','N'); 
-
-radio_south_button = uicontrol('Units', 'normalized', 'Position',[0.52 0.14 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','S');   
-
-radio_west_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.33 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','W');  
-
-radio_east_button = uicontrol('Units', 'normalized', 'Position',[0.63 0.33 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','E');  
- 
-% Orientations  Minor  
-radio_north_west_button = uicontrol('Units', 'normalized', 'Position',[0.39 0.57 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','NW');      
-
-radio_north_east_button = uicontrol('Units', 'normalized', 'Position',[0.61 0.57 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','NE');   
-
-radio_south_west_button = uicontrol('Units', 'normalized', 'Position',[0.39 0.19 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','SW');  
-
-radio_south_east_button = uicontrol('Units', 'normalized', 'Position',[0.61 0.19 0.02 0.05], 'Style', 'radio',...
-    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'on','callback', @orientation_click,...
-    'tag','SE');  
-
-% Create button if has exisiting solar
-orientation_next_button = uicontrol('Units', 'normalized', 'Position',[0.67 0.26 0.3 0.1], 'Style', 'pushbutton',...
-    'String', 'Next', 'Visible', 'Off','Callback', @orientation_next,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
-
-% Create button if has exisiting solar
-orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.37 0.3 0.1], 'Style', 'text',...
-    'tag','orientation_selection', 'Visible', 'Off',...
-    'Backgroundcolor', 'white', 'Foregroundcolor', 'black', 'FontSize', 20);
-
-% Create function for entry
-    function orientation_click(hObject, eventdata)
-                set(orientation_next_button,'Visible','On')         
-                set(orientation_edit_display,'Visible','On') 
-                set(text_orientation_question,'Visible','On')  
-       
-                % Select the tag of each chosen object
-        string = get(hObject, 'tag');
-                    
-% Find which popupmenu was selected and update the variable display box
-            if strcmp(string, 'N')
-                set(orientation_edit_display, 'String', 'North')             
-            elseif strcmp(string, 'S')    
-                set(orientation_edit_display, 'String', 'South') 
-            elseif strcmp(string, 'E')
-                set(orientation_edit_display, 'String', 'East')             
-            elseif strcmp(string, 'W')    
-                set(orientation_edit_display, 'String', 'West')  
-            elseif strcmp(string, 'NE')    
-                set(orientation_edit_display, 'String', 'North-East') 
-            elseif strcmp(string, 'NW')
-                set(orientation_edit_display, 'String', 'North-West')             
-            elseif strcmp(string, 'SE')    
-                set(orientation_edit_display, 'String', 'South-East') 
-            elseif strcmp(string, 'SW')    
-                set(orientation_edit_display, 'String', 'South-West') 
-            end     
-    end
-
-% Create function for battery question
-    function orientation_next(hObject, eventdata)
-                set(orientation_next_button,'Visible','Off')         
-                set(orientation_edit_display,'Visible','Off') 
-                set(text_orientation_question,'Visible','Off')  
-                set(compass_image,'Visible','Off')                 
-
-                set(radio_north_button,'Visible','Off');                set(radio_north_west_button,'Visible','Off')    
-                set(radio_east_button,'Visible','Off');                 set(radio_north_east_button,'Visible','Off')  
-                set(radio_south_button,'Visible','Off');                set(radio_south_east_button,'Visible','Off')  
-                set(radio_west_button,'Visible','Off');                 set(radio_south_west_button,'Visible','Off')  
-    end
 
 
 %% Create an Entry Button
@@ -160,7 +65,7 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
 % Create a button to enter calculator
 enter_gui_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.3 0.3 0.3], 'Style', 'pushbutton',...
     'String', 'Enter Solar Calculator', 'Visible', 'On','Callback', @entry_click,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
 
 
 %% Create solar question
@@ -315,11 +220,117 @@ roof_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1
                 set(tilt_popupmenu,'Visible','OFF')  
                 set(roof_next_button,'Visible','OFF')                             
       
-                set(text_orientation_question,'Visible','ON')                
+                set(text_orientation_question,'Visible','ON')
+                
+                 set(orientation_next_button,'Visible','On')         
+                set(orientation_edit_display,'Visible','On') 
+                set(text_orientation_question,'Visible','On')  
+                set(compass_image,'Visible','On')                 
+
+                set(radio_north_button,'Visible','On');                set(radio_north_west_button,'Visible','On')    
+                set(radio_east_button,'Visible','On');                 set(radio_north_east_button,'Visible','On')  
+                set(radio_south_button,'Visible','On');                set(radio_south_east_button,'Visible','On')  
+                set(radio_west_button,'Visible','On');                 set(radio_south_west_button,'Visible','On')               
+               
     end
 
 %% Roof Orientation
-% Create function for roof parameters
+%% Orientation Image
+
+text_orientation_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+    'String', 'Which orientation is your roof?', 'Visible', 'Off',...
+    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+
+% Load Compass Image
+[x,map]=imread('compass.jpg'); I2=imresize(x, [280 300]);
+compass_image=uicontrol('style','pushbutton','units','normalized','position',[0.333 0.13 0.33 0.55],'cdata',I2, 'Visible', 'Off');
+   
+ % Orientations  Major     
+radio_north_button = uicontrol('Units', 'normalized', 'Position',[0.52 0.61 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','N'); 
+
+radio_south_button = uicontrol('Units', 'normalized', 'Position',[0.52 0.14 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','S');   
+
+radio_west_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.33 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','W');  
+
+radio_east_button = uicontrol('Units', 'normalized', 'Position',[0.63 0.33 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','E');  
+ 
+% Orientations  Minor  
+radio_north_west_button = uicontrol('Units', 'normalized', 'Position',[0.39 0.57 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','NW');      
+
+radio_north_east_button = uicontrol('Units', 'normalized', 'Position',[0.61 0.57 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','NE');   
+
+radio_south_west_button = uicontrol('Units', 'normalized', 'Position',[0.39 0.19 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','SW');  
+
+radio_south_east_button = uicontrol('Units', 'normalized', 'Position',[0.61 0.19 0.02 0.05], 'Style', 'radio',...
+    'Backgroundcolor', 'white', 'FontSize', 20, 'Visible', 'off','callback', @orientation_click,...
+    'tag','SE');  
+
+% Create button if has exisiting solar
+orientation_next_button = uicontrol('Units', 'normalized', 'Position',[0.67 0.26 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'Off','Callback', @orientation_next,...
+    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+
+% Create button if has exisiting solar
+orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.37 0.3 0.1], 'Style', 'text',...
+    'tag','orientation_selection', 'Visible', 'Off',...
+    'Backgroundcolor', 'white', 'Foregroundcolor', 'black', 'FontSize', 20);
+
+% Create function for entry
+    function orientation_click(hObject, eventdata)
+                set(orientation_next_button,'Visible','On')         
+                set(orientation_edit_display,'Visible','On') 
+                set(text_orientation_question,'Visible','On')  
+       
+                % Select the tag of each chosen object
+        string = get(hObject, 'tag');
+                    
+% Find which popupmenu was selected and update the variable display box
+            if strcmp(string, 'N')
+                set(orientation_edit_display, 'String', 'North')             
+            elseif strcmp(string, 'S')    
+                set(orientation_edit_display, 'String', 'South') 
+            elseif strcmp(string, 'E')
+                set(orientation_edit_display, 'String', 'East')             
+            elseif strcmp(string, 'W')    
+                set(orientation_edit_display, 'String', 'West')  
+            elseif strcmp(string, 'NE')    
+                set(orientation_edit_display, 'String', 'North-East') 
+            elseif strcmp(string, 'NW')
+                set(orientation_edit_display, 'String', 'North-West')             
+            elseif strcmp(string, 'SE')    
+                set(orientation_edit_display, 'String', 'South-East') 
+            elseif strcmp(string, 'SW')    
+                set(orientation_edit_display, 'String', 'South-West') 
+            end     
+    end
+
+% Create function for battery question
+    function orientation_next(hObject, eventdata)
+                set(orientation_next_button,'Visible','Off')         
+                set(orientation_edit_display,'Visible','Off') 
+                set(text_orientation_question,'Visible','Off')  
+                set(compass_image,'Visible','Off')                 
+
+                set(radio_north_button,'Visible','Off');                set(radio_north_west_button,'Visible','Off')    
+                set(radio_east_button,'Visible','Off');                 set(radio_north_east_button,'Visible','Off')  
+                set(radio_south_button,'Visible','Off');                set(radio_south_east_button,'Visible','Off')  
+                set(radio_west_button,'Visible','Off');                 set(radio_south_west_button,'Visible','Off')  
+    end
+
 
 
 
