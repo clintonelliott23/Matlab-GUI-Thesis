@@ -49,8 +49,8 @@ background_image = imread('homepage_solar_background.jpg'); imagesc(background_i
 set(background_picture,'handlevisibility','off','visible','off')
 % (4)Ensure all the other objects in the GUI are infront of the background
 uistack(background_picture, 'bottom');
-
 %%%%%%%%%%%%%%%%%
+
 
 
 
@@ -66,23 +66,23 @@ uistack(background_picture, 'bottom');
 % Create a button to enter calculator
 enter_gui_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.3 0.3 0.3], 'Style', 'pushbutton',...
     'String', 'Enter Solar Calculator', 'Visible', 'On','Callback', @entry_click,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+    'Backgroundcolor',grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 
 %% Create solar question
 text_solar_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'Do you have a Solar System?', 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 % Create button if has exisiting solar
 button_yes_solar = uicontrol('Units', 'normalized', 'Position',[0.1 0.3 0.3 0.3], 'Style', 'pushbutton',...
     'String', 'Yes', 'Visible', 'On','Callback', @solar_click_yes, 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 % Create button if has exisiting solar
 button_no_solar = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3], 'Style', 'pushbutton',...
     'String', 'No', 'Visible', 'On','Callback', @solar_click_no, 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 
 %% Solar "YES" what is the size
@@ -90,69 +90,109 @@ button_no_solar = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3],
                 set(text_solar_question,'Visible','OFF') 
                 set(button_yes_solar,'Visible','OFF') 
                 set(button_no_solar,'Visible','OFF')
-                
+     solar_installed = 1        
                 set(solar_size_question,'Visible','ON') 
                 set(KW_popupmenu,'Visible','ON')      
     end
 
 solar_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'What is the size of your Solar System (KW)?', 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
 
 
-    function display_solar_next_button(hObject, eventdata)
-                set(solar_size_next_button,'Visible','ON') 
+
+ 
+
+    function size_next_button(hObject, eventdata)
+                set(solar_size_next_button,'Visible','ON')
+                KW_solar_size = [1 3.5 5 7 9 15]; 
+                index = get(hObject, 'Value');         
+                solar_size_input = KW_solar_size(index) 
 
     end
+
 
 KW_solar_size = [1 3.5 5 7 9 15];
 
 %Set up pop up menu with pulldown data
 KW_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu',...
-    'String', KW_solar_size,'Callback', @display_solar_next_button, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+    'String', KW_solar_size,'Callback', @size_next_button, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
 
 
 % Create button if has exisiting solar
 solar_size_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
-    'String', 'Next', 'Visible', 'On','Callback', @solar_click_no, 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'String', 'Next', 'Visible', 'On','Callback', @cost_display, 'Visible', 'On',...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
+    function cost_display(hObject, eventdata)
+                set(solar_size_next_button,'Visible','off') 
+                set(KW_popupmenu,'Visible','off')                
+                set(solar_size_question,'Visible','off')
+
+                set(cost_solar_question,'Visible','ON') 
+                set(cost_popupmenu,'Visible','ON')               
+    end
+
+%% How much did ya solar cost bra
+cost_solar_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+    'String', 'How much did your solar system cost ($)?', 'Visible', 'On',...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
+
+    function cost_next_button_call(hObject, eventdata)
+                set(cost_next_button,'Visible','ON') 
+                                               
+                solar_cost = [4 5 6 7 8 9 10 11 13 14 16];                
+                index = get(hObject, 'Value');         
+                cost_solar_input = solar_cost(index) 
+    end
+
+solar_cost = [4 5 6 7 8 9 10 11 13 14 16];
+
+%Set up pop up menu with pulldown data
+cost_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu',...
+    'String', solar_cost,'Callback', @cost_next_button_call, 'tag', 'cost_menu', 'Visible', 'OFF', 'FontSize', 20);
+
+
+% Create button if has exisiting solar
+cost_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'Off','Callback', @solar_click_no,...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
+
+%% Battery
   % Create function for battery question
     function solar_click_no(hObject, eventdata)
                 set(text_solar_question,'Visible','OFF') 
                 set(button_yes_solar,'Visible','OFF') 
                 set(button_no_solar,'Visible','OFF')       
                 
-                set(solar_size_question,'Visible','OFF') 
-                set(KW_popupmenu,'Visible','OFF')                
-                set(solar_size_next_button,'Visible','OFF')  
+                set(cost_solar_question,'Visible','OFF') 
+                set(cost_popupmenu,'Visible','OFF')                
+                set(cost_next_button,'Visible','OFF')  
                 
                 set(text_battery_question,'Visible','ON') 
                 set(button_yes_battery,'Visible','ON') 
                 set(button_no_battery,'Visible','ON')    
-
-                
     end   
 
 text_battery_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'Do you have a battery?', 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 % Create button if has exisiting solar
 button_yes_battery = uicontrol('Units', 'normalized', 'Position',[0.1 0.3 0.3 0.3], 'Style', 'pushbutton',...
     'String', 'Yes', 'Visible', 'On','Callback', @battery_click_yes,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 % Create button if has exisiting solar
 button_no_battery = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3], 'Style', 'pushbutton',...
     'String', 'No', 'Visible', 'On','Callback', @battery_click_no,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
     function battery_click_yes(hObject, eventdata)
                 set(text_battery_question,'Visible','OFF') 
                 set(button_yes_battery,'Visible','OFF') 
                 set(button_no_battery,'Visible','OFF')
-                
+       
                 set(battery_size_question,'Visible','ON') 
                 set(KWHR_popupmenu,'Visible','ON')      
     end
@@ -160,7 +200,7 @@ button_no_battery = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3
 
  battery_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'What is the size of your Battery (KWHR)?', 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
 
 KWHR_battery_size = [1 2 4 6 8 12];
 %Set up pop up menu with pulldown data
@@ -171,10 +211,14 @@ KWHR_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15
 % Create button if has exisiting solar
 battery_size_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
     'String', 'Next','Visible', 'On','Callback', @battery_click_no,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
     function display_battery_next_button(hObject, eventdata)
                 set(battery_size_next_button,'Visible','ON') 
+                
+                KWHR_battery_size = [1 2 4 6 8 12];            
+                index = get(hObject, 'Value');         
+                battery_size_input = KWHR_battery_size(index)  
     end
 
 % 
@@ -187,7 +231,7 @@ battery_size_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4
                 set(battery_size_question,'Visible','OFF') 
                 set(KWHR_popupmenu,'Visible','OFF')      
                 set(battery_size_next_button,'Visible','OFF') 
-                
+                  
                 set(text_roof_question,'Visible','ON') 
                 set(tilt_popupmenu,'Visible','ON')                       
     end
@@ -197,7 +241,7 @@ battery_size_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4
 % % Create function for roof parameters
 text_roof_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'What is the angle of your roof (Degrees)?', 'Visible', 'On',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 roof_tilt = [0 5 10 15 20 25 30 35 40 45];
 %Set up pop up menu with pulldown data
@@ -206,13 +250,17 @@ tilt_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15
     'String', roof_tilt,'Callback', @roof_next, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
    
     function roof_next(hObject, eventdata)
-                set(roof_next_button,'Visible','ON') 
+                set(roof_next_button,'Visible','ON')
+                
+                roof_tilt = [0 5 10 15 20 25 30 35 40 45];                 
+                 index = get(hObject, 'Value');         
+                 roof_tilt_input = roof_tilt(index) 
     end
  
 % Create button if has exisiting solar
 roof_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
     'String', 'Next','Visible', 'On','Callback', @roof_click,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 
 % Create function for battery question
@@ -240,7 +288,7 @@ roof_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1
 
 text_orientation_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'Which orientation is your roof?', 'Visible', 'Off',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 % Load Compass Image
 [x,map]=imread('compass.jpg'); I2=imresize(x, [280 300]);
@@ -301,21 +349,21 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
                     
 % Find which popupmenu was selected and update the variable display box
             if strcmp(string, 'N')
-                set(orientation_edit_display, 'String', 'North')             
+                set(orientation_edit_display, 'String', 'North'); orientation_input = 1               
             elseif strcmp(string, 'S')    
-                set(orientation_edit_display, 'String', 'South') 
+                set(orientation_edit_display, 'String', 'South') ; orientation_input = 3  
             elseif strcmp(string, 'E')
-                set(orientation_edit_display, 'String', 'East')             
+                set(orientation_edit_display, 'String', 'East')   ; orientation_input = 2             
             elseif strcmp(string, 'W')    
-                set(orientation_edit_display, 'String', 'West')  
+                set(orientation_edit_display, 'String', 'West')  ; orientation_input = 4  
             elseif strcmp(string, 'NE')    
-                set(orientation_edit_display, 'String', 'North-East') 
+                set(orientation_edit_display, 'String', 'North-East') ; orientation_input = 5  
             elseif strcmp(string, 'NW')
-                set(orientation_edit_display, 'String', 'North-West')             
+                set(orientation_edit_display, 'String', 'North-West') ; orientation_input = 8               
             elseif strcmp(string, 'SE')    
-                set(orientation_edit_display, 'String', 'South-East') 
+                set(orientation_edit_display, 'String', 'South-East') ; orientation_input = 6   
             elseif strcmp(string, 'SW')    
-                set(orientation_edit_display, 'String', 'South-West') 
+                set(orientation_edit_display, 'String', 'South-West'); orientation_input = 7    
             end     
     end
 
@@ -342,7 +390,7 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
 % Create function for roof parameters
 text_state_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'What is your post code?', 'Visible', 'Off',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 %Set up pop up menu with pulldown data for states
 state_codes = [4814 4825 4820];
@@ -360,7 +408,8 @@ postcode_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1],
         for i = 1:1:length(state_codes)       
                        if value == state_codes(i)
                          set(state_display_button, 'String', state_names(i))                              
-                         set(state_next_button,'Visible','ON')                            
+                         set(state_next_button,'Visible','ON')
+                         disp(state_names(i))
                        end   
         end        
     end
@@ -373,7 +422,7 @@ state_display_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3
 % Create button for next
 state_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.1], 'Style', 'pushbutton',...
     'String', 'Next','Visible', 'Off','Callback', @state_click,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 
 % Create function for end of state codes
@@ -391,28 +440,75 @@ state_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.
 % Create function for roof parameters
 text_bill_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'Cost of last quarter bill?', 'Visible', 'Off',...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 bill_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1], 'Style', 'edit',...
    'Callback', @bill_next, 'tag', 'state_entry', 'Visible', 'Off', 'FontSize', 20);
    
     function bill_next(hObject, eventdata)    
        % Select the tag of each chosen object
-        bill = str2double(get(postcode_edit,'string'));
-        set(bill_next_button,'Visible','ON')                    
+        bill = str2double(get(bill_edit,'string'))
+        set(bill_next_button,'Visible','ON')
     end
 
 % Create button for next
 bill_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.1], 'Style', 'pushbutton',...
     'String', 'Next','Visible', 'Off','Callback', @bill_click,...
-    'Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 20);
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 % Create function for end of state codes
     function bill_click(hObject, eventdata)
                 set(text_bill_question,'Visible','Off')         
                 set(bill_edit,'Visible','Off') 
                 set(bill_next_button,'Visible','Off')  
+                
+                set(number_people_question,'Visible','On')  
+                set(people_popupmenu,'Visible','On')                
     end
+%% Create number of people questions
+% Create function people
+number_people_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+    'String', 'How many occupants in the residence?', 'Visible', 'Off',...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);   
+
+
+    function display_people_next_button(hObject, eventdata)
+                set(people_next_button,'Visible','ON')
+                number_people = [0 1 2 3 4 5];
+                index = get(hObject, 'Value');         
+                number_people_input = number_people(index)              
+    end
+
+number_people = [0 1 2 3 4 5];
+
+%Set up pop up menu with pulldown data
+people_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu',...
+    'String', number_people,'Callback', @display_people_next_button, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+
+% Create button if has exisiting solar
+people_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'Off','Callback', @people_click,...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
+
+  % Create function for battery question
+    function people_click(hObject, eventdata)
+                set(number_people_question,'Visible','Off')  
+                set(people_popupmenu,'Visible','Off') 
+                set(people_next_button,'Visible','Off') 
+               
+    end   
+
+
+%% Set up 
+% Set tabs and tab labels 
+NumTabs = 4;    % will have 7 tabs 
+TabLabels = {'Home';'Battery';'Schedule';'Smart Home'}; 
+
+
+
+
+
+
 
 
 end
