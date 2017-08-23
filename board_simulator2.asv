@@ -58,7 +58,7 @@ TabHandles{NumTabs+2,3} = grey;            % Background color
      for TabNumber = 1:NumTabs 
         TabHandles{TabNumber,1} = uipanel('Units','pixels',... 
             'Visible','off','BackgroundColor',white,'BorderWidth',1,...
-            'Position',[1 0 PanelWidth PanelHeight]); 
+            'Position',[TabOffset TabOffset PanelWidth PanelHeight]); 
 
         TabHandles{TabNumber,2} = uicontrol('Style','pushbutton',... 
             'Units','pixels','BackgroundColor',grey,...         
@@ -168,13 +168,13 @@ exp_repl_date = '01-DEC-2028';
 SOHreg = zeros(1,cycle_life+1); % empty array to store SOH values                                 % calculated from regression analysis 
                                 % for use in the capacity fade profile 
   
-% % Obtain expected SOHave over battery lifetime 
-% SOHave = SOH_ave(cycle_life); 
-% SOHave = double(SOHave);        % convert to decimal form 
-%   
-% % Obtain optimal DOD and the equivalent LET for the battery: 
-% [DODopt,LETopt,CLopt] = LET_DOD(CLvals,DODvals,bsize,nc,nd); 
-%   
+% Obtain expected SOHave over battery lifetime 
+SOHave = SOH_ave(cycle_life); 
+SOHave = double(SOHave);        % convert to decimal form 
+  
+% Obtain optimal DOD and the equivalent LET for the battery: 
+[DODopt,LETopt,CLopt] = LET_DOD(CLvals,DODvals,bsize,nc,nd); 
+  
   
 % Driving info - note that this information would be monitored while the EV 
 % is being driven; however because the vehicle is stationary in this 
@@ -191,22 +191,22 @@ Rdone = round((bcap*(100-SOC)/100)/ud);
 % Remaining range (km) is calculated based on optimal DOD, not max DOD 
 % Thus the actual remaining range before user MUST recharge is actually 
 % greater than what is displayed on the screen 
-% Rrem = round((bcap*(SOC-(100-DODopt))/100)/ud); 
-% D = 0;                          % remaining trip distance, km 
-% SOCf = SOC-((D*ud)/bcap);       % arrival SOC for current trip (%) 
-%   
+Rrem = round((bcap*(SOC-(100-DODopt))/100)/ud); 
+D = 0;                          % remaining trip distance, km 
+SOCf = SOC-((D*ud)/bcap);       % arrival SOC for current trip (%) 
+  
 % Parameters for discharge schedule: 
 Re = 40;                        % user specified emergency range = 40 km 
 % Threshold SOC value where discharging needs to stop (%): 
-% SOCcut = (1-DODmax+(Re*1.2*udworst)/bcap)*100; 
+SOCcut = (1-DODmax+(Re*1.2*udworst)/bcap)*100; 
   
 % If the SOC value calculated above is less than SOCopt (i.e. 1 - DODopt),  
 % then use SOCopt as the discharging threshold value 
-%     if SOCcut <= (100-DODopt)     
-%     SOCcut = (100-DODopt); 
-%     end 
-% AWCopt = bcost/(cycle_life*2*((100-SOCcut)/100)*bsize*SOHave/100); 
-% % Home info 
+    if SOCcut <= (100-DODopt)     
+    SOCcut = (100-DODopt); 
+    end 
+AWCopt = bcost/(cycle_life*2*((100-SOCcut)/100)*bsize*SOHave/100); 
+% Home info 
 ESS = 60;                   % Home Energy Storage System SOC, %   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%% 
@@ -215,64 +215,64 @@ ESS = 60;                   % Home Energy Storage System SOC, %
 % The following are data arrays to be used in the various tables included % in this GUI. 
   
 % Driving data (to be used when driving the EV): 
-% u_info = {'Power In' Pin '  kW'; 'Power Out' Pout '  kW';      'Efficiency' ud '  kWh / km'; 'Emissions' ue '  g CO2 / km';     'Arrival SOC' SOCf '  %'}; 
+u_info = {'Power In' Pin '  kW'; 'Power Out' Pout '  kW';      'Efficiency' ud '  kWh / km'; 'Emissions' ue '  g CO2 / km';     'Arrival SOC' SOCf '  %'}; 
 % Charging info (to be used when EV is charging): 
-% charge_info = {'Percent Complete' 0 ' %'; 'Remaining Time' 0 ' hours'; 
-%     'Power In' 0 ' kW'; 'Charge Rate' 0 ' kW'; 
-%     'Efficiency' nc*100 ' %'; 'Current Price' current_price ' $ / kWh'; 
-%     'Average Price' 0 ' $ / kWh'; 'Current Emissions' 0 ' g CO2 / kW'; 
-%     'Average Emissions' 0 'g CO2 / kWh';  'Total Cost' 0 ' $'; 
-%     'Total Emissions' 0 ' g CO2'}; 
-% % Discharging info (to be used when EV is discharging): 
-% discharge_info = {'Percent Complete' 0 ' %'; 'Remaining Time' 0 ' hours'; 
-%     'Power Out' 0 ' kW'; 'Power Received' 0 ' kW'; 
-%     'Efficiency' nd*100 ' %'; 'Current Price' current_price ' $ / kWh'; 
-%     'Average Price' 0 ' $ / kWh'; 'Total Income' 0 ' $'}; % Economics info (general info on the user's economic status): 
-% economics_info = {'Battery Cost' bcost ' $' ... 
-%     'Battery AWC' AWCopt ' $ / kWh';  
-%     'Average P/L per cycle' lt_profit ' $' ...     'Current P/L' lt_profit*cycles_used ' $'; 
-%     'Best cycle P/L' lt_profit ' $' ... 
-%     'Worst cycle P/L' lt_profit ' $'; 
-%     'Cycles Completed' cycles_used 'cycles' ... 
-%     'Cycles Remaining' (cycle_life-cycles_used) 'cycles'; 
-%     'Forecasted Total P/L' 0 ' $' '' '' ''; 
-%     'Total fuel P/L' 0 ' $' 'Fuel P/L per km' 0 ' $/km'; 
-%     'Total Expected km' 0 ' km' 'Total P/L per km' 0 ' $/km'}; % Battery info (general info on the EV battery, its health and current % condition: 
-% battery_info = {'Battery Type:' btype ... 
-%     'Rated Capacity' sprintf('%g kWh',bsize); 
-%     'Actual capacity:' sprintf('%g kWh',(bsize*SOHcurrent/100)) ... 
-%     'Available Capacity:' sprintf('%g kWh',bsize*SOHcurrent*DODmax/100);     
-%     'Installation Date:' inst_date ... 
-%     'Expected Replacement Date:' exp_repl_date; 
-%     'Calendar Life:' calendar_life ... 
-%     'Cycle Life:' sprintf('%g cycles',cycle_life); 
-%     'Optimal Depth of Discharge:' sprintf('%g %%',DODopt) ... 
-%     'Battery Cost:' sprintf('$ %g',bcost)';  
-%     'Cycles used:' sprintf('%g cycles',cycles_used) ... 
-%     'Average Wear Cost' sprintf('%g $ / kWh',AWCopt)};   
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%% 
-%   
-% %% Define content for the bottom panel of display % Display the time in the bottom left corner of the GUI 
-% uicontrol('Style','text','Position',[10 15 round(PanelWidth/2) 18],... 
-%     'string',sprintf('%d:%d',hr,mins),'BackgroundColor',white,... 
-%     'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
-%     'FontSize',14); 
-%   
-% % Display the SOC gauge in the bottom right corner of the GUI 
-% axes('Units','pixels','Position',[980 18 100 15]); 
-% area1 = area([(1-SOC/100) 1],[1 1]); 
-% set(gca,'xtick',[]); set(gca,'ytick',[]); 
-% set(gca,'xlim',[0 1]);  
-% set(gca,'ylim',[0 1]); 
-% if SOC <= 25         
-%     set(area1,'FaceColor','red');       % display as red if SOC is low 
-% elseif SOC <= 40     
-%     set(area1,'FaceColor','yellow');    % display as yellow if SOC is  
-%                                         % intermediate else 
-%     set(area1,'FaceColor','green');     % display as green if SOC is high end 
+charge_info = {'Percent Complete' 0 ' %'; 'Remaining Time' 0 ' hours'; 
+    'Power In' 0 ' kW'; 'Charge Rate' 0 ' kW'; 
+    'Efficiency' nc*100 ' %'; 'Current Price' current_price ' $ / kWh'; 
+    'Average Price' 0 ' $ / kWh'; 'Current Emissions' 0 ' g CO2 / kW'; 
+    'Average Emissions' 0 'g CO2 / kWh';  'Total Cost' 0 ' $'; 
+    'Total Emissions' 0 ' g CO2'}; 
+% Discharging info (to be used when EV is discharging): 
+discharge_info = {'Percent Complete' 0 ' %'; 'Remaining Time' 0 ' hours'; 
+    'Power Out' 0 ' kW'; 'Power Received' 0 ' kW'; 
+    'Efficiency' nd*100 ' %'; 'Current Price' current_price ' $ / kWh'; 
+    'Average Price' 0 ' $ / kWh'; 'Total Income' 0 ' $'}; % Economics info (general info on the user's economic status): 
+economics_info = {'Battery Cost' bcost ' $' ... 
+    'Battery AWC' AWCopt ' $ / kWh';  
+    'Average P/L per cycle' lt_profit ' $' ...     'Current P/L' lt_profit*cycles_used ' $'; 
+    'Best cycle P/L' lt_profit ' $' ... 
+    'Worst cycle P/L' lt_profit ' $'; 
+    'Cycles Completed' cycles_used 'cycles' ... 
+    'Cycles Remaining' (cycle_life-cycles_used) 'cycles'; 
+    'Forecasted Total P/L' 0 ' $' '' '' ''; 
+    'Total fuel P/L' 0 ' $' 'Fuel P/L per km' 0 ' $/km'; 
+    'Total Expected km' 0 ' km' 'Total P/L per km' 0 ' $/km'}; % Battery info (general info on the EV battery, its health and current % condition: 
+battery_info = {'Battery Type:' btype ... 
+    'Rated Capacity' sprintf('%g kWh',bsize); 
+    'Actual capacity:' sprintf('%g kWh',(bsize*SOHcurrent/100)) ... 
+    'Available Capacity:' sprintf('%g kWh',bsize*SOHcurrent*DODmax/100);     
+    'Installation Date:' inst_date ... 
+    'Expected Replacement Date:' exp_repl_date; 
+    'Calendar Life:' calendar_life ... 
+    'Cycle Life:' sprintf('%g cycles',cycle_life); 
+    'Optimal Depth of Discharge:' sprintf('%g %%',DODopt) ... 
+    'Battery Cost:' sprintf('$ %g',bcost)';  
+    'Cycles used:' sprintf('%g cycles',cycles_used) ... 
+    'Average Wear Cost' sprintf('%g $ / kWh',AWCopt)};   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% 
+  
+%% Define content for the bottom panel of display % Display the time in the bottom left corner of the GUI 
+uicontrol('Style','text','Position',[10 15 round(PanelWidth/2) 18],... 
+    'string',sprintf('%d:%d',hr,mins),'BackgroundColor',white,... 
+    'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
+    'FontSize',14); 
+  
+% Display the SOC gauge in the bottom right corner of the GUI 
+axes('Units','pixels','Position',[980 18 100 15]); 
+area1 = area([(1-SOC/100) 1],[1 1]); 
+set(gca,'xtick',[]); set(gca,'ytick',[]); 
+set(gca,'xlim',[0 1]);  
+set(gca,'ylim',[0 1]); 
+if SOC <= 25         
+    set(area1,'FaceColor','red');       % display as red if SOC is low 
+elseif SOC <= 40     
+    set(area1,'FaceColor','yellow');    % display as yellow if SOC is  
+                                        % intermediate else 
+    set(area1,'FaceColor','green');     % display as green if SOC is high end 
 % Display the actual SOC percentage as text next to the gauge 
 uicontrol('Style', 'text','Position', [830 15 140 18],... 
     'string',sprintf('Battery SOC: %d%%',SOC),'BackgroundColor','white',... 
@@ -292,8 +292,8 @@ axes('Parent',TabHandles{1,1},'Units','pixels',...
     'Position',[935 483 152 85]); area([0 1],[1 1], 'FaceColor', grey); 
 axis off; axes('Parent',TabHandles{1,1},'Units','pixels','Position',[945 496 40 40]); 
 imsc=4; 
-% suni=imread('sunny.jpg');           % Assume sunny weather 
-% sunj=imresize(suni,imsc); image(sunj); 
+suni=imread('sunny.jpg');           % Assume sunny weather 
+sunj=imresize(suni,imsc); image(sunj); 
 axis off; uicontrol('Style','text','Parent', TabHandles{1,1},... 
     'Position', [943 540 120 20],'string', Location,... 
     'BackgroundColor',grey,'HorizontalAlignment','left',... 
@@ -321,89 +321,88 @@ set(tempb,'Callback',{@temp_callback});
 %         end
 %     end
   
-% Information box for remaining range display 
+Information box for remaining range display 
 axes('Parent',TabHandles{1,1},'Units','pixels','Position',[5 483 925 85]); 
 area([0 1],[1 1], 'FaceColor', grey); 
-axis off; 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},...     
-%     'Position',[20 520 910 35],... 
-%     'string',sprintf('Remaining Range: %d km',Rrem),... 
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 16); 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
-%     'Position',[20 485 910 35],... 
-%     'string',...     
-%     sprintf('Distance travelled since last charge: %d km',Rdone),...     
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',... 
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 16); 
+axis off; uicontrol('Style', 'text','Parent', TabHandles{1,1},...     
+    'Position',[20 520 910 35],... 
+    'string',sprintf('Remaining Range: %d km',Rrem),... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 16); 
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position',[20 485 910 35],... 
+    'string',...     
+    sprintf('Distance travelled since last charge: %d km',Rdone),...     
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',... 
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 16); 
   
 % Driving Information Table: 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
-%     'Position', [8 452 355 25],'string', 'DRIVING',... 
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
-% ustat = uitable('Position',[8 255 355 195],'Parent', TabHandles{1,1},... 
-%     'Data',u_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
-%     'ColumnWidth',{151 81 121}); 
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position', [8 452 355 25],'string', 'DRIVING',... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+ustat = uitable('Position',[8 255 355 195],'Parent', TabHandles{1,1},... 
+    'Data',u_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
+    'ColumnWidth',{151 81 121}); 
   
 % Charging Information Table: 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
-%     'Position', [368 452 355 25],'string', 'CHARGING',... 
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
-% cstat = uitable('Position',[368 255 355 195],'Parent', TabHandles{1,1},...   
-% 'Data',charge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
-%     'ColumnWidth',{151 81 121}); 
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position', [368 452 355 25],'string', 'CHARGING',... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+cstat = uitable('Position',[368 255 355 195],'Parent', TabHandles{1,1},...   
+'Data',charge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
+    'ColumnWidth',{151 81 121}); 
   
-% % Discharging Information Table: 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
-%     'Position', [728 452 355 25],'string', 'DISCHARGING',... 
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
-% dstat = uitable('Position',[728 255 355 195],'Parent', TabHandles{1,1},...     
-% 'Data',discharge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
-% %     'ColumnWidth',{151 81 121}); 
-%   
-% % Vehicle Economics Table: 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
-%     'Position', [8 215 1076 25],'string', 'VEHICLE ECONOMICS',...     
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
-% economics = uitable('Position',[123 46 842 164],... 
-%     'Parent', TabHandles{1,1},...    
-% 'Data',economics_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
-%     'ColumnWidth',{200 100 120 200 100 120}); 
-%   
+% Discharging Information Table: 
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position', [728 452 355 25],'string', 'DISCHARGING',... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+dstat = uitable('Position',[728 255 355 195],'Parent', TabHandles{1,1},...     
+'Data',discharge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
+    'ColumnWidth',{151 81 121}); 
+  
+% Vehicle Economics Table: 
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position', [8 215 1076 25],'string', 'VEHICLE ECONOMICS',...     
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+economics = uitable('Position',[123 46 842 164],... 
+    'Parent', TabHandles{1,1},...    
+'Data',economics_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
+    'ColumnWidth',{200 100 120 200 100 120}); 
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%% 
-%   
-% %% Define content for Battery Tab % Battery Information Table: 
-% ColumnWidths = {900*1.22/4 900*.78/4 900*1.22/4 900*.78/4}; 
-% uicontrol('Style', 'text','Parent', TabHandles{2,1},... 
-%     'Position', [8 545 1076 25],'string', 'BATTERY INFORMATION',...     
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
-% uitable('Position',[80 400 900 140],'Parent', TabHandles{2,1},... 
-% %     'ColumnWidth', ColumnWidths,'FontSize', 11,'RowName',[],... 
-% %     'ColumnName',[],'Data', battery_info); 
-% %   
-% % Capacity Fade Profile: 
-% uicontrol('Style', 'text','Parent', TabHandles{2,1},...     
-%     'Position', [8 370 1076 25],'string', 'CAPACITY FADE PROFILE',... 
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); bcapax = axes('Parent',TabHandles{2,1},'Units','pixels','Visible','on',... 
-%     'Position', [80 205 900 150]); 
+%%%%%%% 
+  
+%% Define content for Battery Tab % Battery Information Table: 
+ColumnWidths = {900*1.22/4 900*.78/4 900*1.22/4 900*.78/4}; 
+uicontrol('Style', 'text','Parent', TabHandles{2,1},... 
+    'Position', [8 545 1076 25],'string', 'BATTERY INFORMATION',...     
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+uitable('Position',[80 400 900 140],'Parent', TabHandles{2,1},... 
+    'ColumnWidth', ColumnWidths,'FontSize', 11,'RowName',[],... 
+    'ColumnName',[],'Data', battery_info); 
+  
+% Capacity Fade Profile: 
+uicontrol('Style', 'text','Parent', TabHandles{2,1},...     
+    'Position', [8 370 1076 25],'string', 'CAPACITY FADE PROFILE',... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); bcapax = axes('Parent',TabHandles{2,1},'Units','pixels','Visible','on',... 
+    'Position', [80 205 900 150]); 
 for c1 = 0:1:cycle_life 
     SOHreg(c1+1) = (-7*10^(-6)*(c1)^2-0.0003*(c1)+100); 
 end 
 plot(0:1:cycles_used,SOHvals,'b--*',0:1:cycle_life,SOHreg,'r') 
-% set(bcapax, 'ylim', [80 100])   % bottom SOH value = 80% as this is the  
+set(bcapax, 'ylim', [80 100])   % bottom SOH value = 80% as this is the  
                                 % recommended replacement SOH based on 
                                 % literature 
                                 
-% set(bcapax, 'xlim', [0 cycle_life]); xlabel('Cycle Count'); ylabel('SOH (%)'); grid on; 
+set(bcapax, 'xlim', [0 cycle_life]); xlabel('Cycle Count'); ylabel('SOH (%)'); grid on; 
   
 % Life Expectancy Bar: 
 uicontrol('Style', 'text','Parent', TabHandles{2,1},... 
@@ -571,51 +570,51 @@ dispb = uicontrol('Style', 'pushbutton',...
 %%% ARROWS 
 arr1 = axes('Parent', TabHandles{4,1},'Units', 'pixels',...     
     'Visible', 'on','Position', [705 357 120 50]); imsc = 4; 
-% read1 = imread('arrow1.jpg');arrow1 = imresize(read1,imsc);image(arrow1); 
+read1 = imread('arrow1.jpg');arrow1 = imresize(read1,imsc);image(arrow1); 
 axis off;   arr2 = axes('Parent', TabHandles{4,1}, ... 
     'Units', 'pixels', ... 
     'Visible', 'on',...    
     'Position', [410 355 120 50]); imsc = 4; 
-% read1 = imread('arrow2.jpg');arrow2 = imresize(read1,imsc);image(arrow2); axis off;   arr3 = axes('Parent', TabHandles{4,1}, ... 
-%     'Units', 'pixels', ... 
-%     'Visible', 'on',...    
-% %     'Position', [604 382 20 64]); imsc = 4; 
-% read1 = imread('arrow3.jpg');arrow3 = imresize(read1,imsc);image(arrow3); axis off;   arr4 = axes('Parent', TabHandles{4,1}, ... 
-%     'Units', 'pixels', ... 
-%     'Visible', 'on',...    
-%     'Position', [490 270 40 80]); imsc = 4; 
-% read1 = imread('arrow4.jpg');arrow4 = imresize(read1,imsc);image(arrow4); axis off;   arr5 = axes('Parent', TabHandles{4,1}, ... 
-%     'Units', 'pixels', ... 
-%     'Visible', 'on',...     
-%     'Position', [705 270 40 80]); imsc = 4; 
-% read1 = imread('arrow5.jpg');arrow5 = imresize(read1,imsc);image(arrow5); axis off; 
-%   
+read1 = imread('arrow2.jpg');arrow2 = imresize(read1,imsc);image(arrow2); axis off;   arr3 = axes('Parent', TabHandles{4,1}, ... 
+    'Units', 'pixels', ... 
+    'Visible', 'on',...    
+    'Position', [604 382 20 64]); imsc = 4; 
+read1 = imread('arrow3.jpg');arrow3 = imresize(read1,imsc);image(arrow3); axis off;   arr4 = axes('Parent', TabHandles{4,1}, ... 
+    'Units', 'pixels', ... 
+    'Visible', 'on',...    
+    'Position', [490 270 40 80]); imsc = 4; 
+read1 = imread('arrow4.jpg');arrow4 = imresize(read1,imsc);image(arrow4); axis off;   arr5 = axes('Parent', TabHandles{4,1}, ... 
+    'Units', 'pixels', ... 
+    'Visible', 'on',...     
+    'Position', [705 270 40 80]); imsc = 4; 
+read1 = imread('arrow5.jpg');arrow5 = imresize(read1,imsc);image(arrow5); axis off; 
+  
 %%% CONNECTION STATUSES 
 yes1b = uicontrol('Style','pushbutton',... 
     'Parent',TabHandles{4,1},...    
     'Visible','on',...     
     'Position',[455 358 30 20]); 
-% read1 = imread('yes.jpg');imsc = 0.27;yes1 = imresize(read1,imsc); set(yes1b, 'CData', yes1); 
+read1 = imread('yes.jpg');imsc = 0.27;yes1 = imresize(read1,imsc); set(yes1b, 'CData', yes1); 
   yes2b = uicontrol('Style','pushbutton',... 
     'Parent',TabHandles{4,1},...     
     'Visible','on',...   
     'Position',[600 405 30 20]); 
-% read1 = imread('yes.jpg');imsc = 0.27;yes2 = imresize(read1,imsc); set(yes2b, 'CData', yes2); 
+read1 = imread('yes.jpg');imsc = 0.27;yes2 = imresize(read1,imsc); set(yes2b, 'CData', yes2); 
   yes3b = uicontrol('Style','pushbutton',... 
     'Parent',TabHandles{4,1},...    
     'Visible','on',...  
     'Position',[750 356 30 20]); 
-% read1 = imread('yes.jpg');imsc = 0.27;yes3 = imresize(read1,imsc); set(yes3b, 'CData', yes3); 
+read1 = imread('yes.jpg');imsc = 0.27;yes3 = imresize(read1,imsc); set(yes3b, 'CData', yes3); 
   yes4b = uicontrol('Style','pushbutton',... 
     'Parent',TabHandles{4,1},...    
     'Visible','on',...    
     'Position',[480 300 30 20]); 
-% read1 = imread('yes.jpg');imsc = 0.27;yes4 = imresize(read1,imsc); set(yes4b, 'CData', yes4); 
+read1 = imread('yes.jpg');imsc = 0.27;yes4 = imresize(read1,imsc); set(yes4b, 'CData', yes4); 
   yes5b = uicontrol('Style','pushbutton',... 
     'Parent',TabHandles{4,1},...    
     'Visible','on',...    
     'Position',[719 300 30 20]); 
-% read1 = imread('yes.jpg');imsc = 0.27;yes5 = imresize(read1,imsc); set(yes5b, 'CData', yes5); 
+read1 = imread('yes.jpg');imsc = 0.27;yes5 = imresize(read1,imsc); set(yes5b, 'CData', yes5); 
   
 % Communication Link descriptions: 
 hstr1 = sprintf('Battery System to Smart Meter:\nCurrent Energy Density, Maximum Capacity, Current Activity Status'); 
@@ -642,43 +641,43 @@ set(yes4b, 'Callback', {@yes4b_callback}); set(yes5b, 'Callback', {@yes5b_callba
 %%%%%%%%%%%%%%%%%%%%% CONSUMPTION TAB %%%%%%%%%%%%%%%%%%%%%%%%% 
 % Hours of the day x1 = 0.5:1:23.5; 
 % Hourly Household Energy Consumption, kWh (arbitrary data) 
-% y1 = [0.22 0.25 0.25 0.25 0.24 0.28 0.31 0.34 0.36 0.33 0.32 0.3 0.3 
-% 0.28 0.29 0.34 0.36 0.41 0.46 0.51 0.49 0.4 0.33 0.25]; % Hourly Prices 
-% y22 = [19.2 19.2 19.2 19.2 19.2 19.2 19.2 23.0 23.0 23.0 23.0 23.0 
-% 23.0 23.0 23.0 23.0 34 34 34 34 23.0 23.0 19.2 19.2]; % Consumption Costs 
-% y3 = (y1.*y22)/100; 
+y1 = [0.22 0.25 0.25 0.25 0.24 0.28 0.31 0.34 0.36 0.33 0.32 0.3 0.3 
+0.28 0.29 0.34 0.36 0.41 0.46 0.51 0.49 0.4 0.33 0.25]; % Hourly Prices 
+y22 = [19.2 19.2 19.2 19.2 19.2 19.2 19.2 23.0 23.0 23.0 23.0 23.0 
+23.0 23.0 23.0 23.0 34 34 34 34 23.0 23.0 19.2 19.2]; % Consumption Costs 
+y3 = (y1.*y22)/100; 
 % Calculated daily cost and expected monthly bill: 
-% todcost = sum(y3); montcost = todcost*12; estcost = todcost*30; % Display these costs: 
-% ctxt = sprintf('Cost Today:\n$%g\nCost This Month To Date:\n$%g\nEstimated Month Bill:\n$%g',todcost,montcost,estcost); 
-% bill_txt = uicontrol('Style', 'text',... 
-%     'Parent', TabHandles{4,1},... 
-%     'Position',[30 90 140 120],... 
-%     'string','Household Costs:',...   
-%     'BackgroundColor',white,...    
-%     'FontName','arial',... 
-%     'FontWeight','bold',...    
-%     'FontSize',12); bill_txt2 = uicontrol('Style', 'text',... 
-%     'Parent', TabHandles{4,1},... 
-%     'Position',[15 55 170 130],... 
-%     'string',ctxt,... 
-%     'BackgroundColor',white,... 
-%     'FontName','arial',... 
-%     'FontWeight','bold',... 
-%     'FontSize',11); % Display Home ESS SOC Gauge 
-% axes('Units','pixels','Parent',TabHandles{4,1},'Position',[30 230 140 200]); 
-% area2 = area([0 1],[(ESS/100) (ESS/100)]); 
-% set(gca,'xtick',[]); set(gca,'ytick',[]); set(gca,'xlim',[0 1]); set(gca,'ylim',[0 1]); 
-% if ESS <= 25  
-%     set(area2,'FaceColor','red'); 
-% elseif ESS <= 40   
-%     set(area2,'FaceColor','yellow');
-% else 
-%     set(area2,'FaceColor','green');
-% end
-% uicontrol('Style', 'text','Position', [30 430 140 20],'Parent',TabHandles{4,1},...
-%     'string', sprintf('Home ESS: %d%%',ESS),'BackgroundColor', 'white',... 
-%     'HorizontalAlignment', 'center','FontName', 'arial','FontWeight', 'bold',... 
-%     'FontSize', 12); 
+todcost = sum(y3); montcost = todcost*12; estcost = todcost*30; % Display these costs: 
+ctxt = sprintf('Cost Today:\n$%g\nCost This Month To Date:\n$%g\nEstimated Month Bill:\n$%g',todcost,montcost,estcost); 
+bill_txt = uicontrol('Style', 'text',... 
+    'Parent', TabHandles{4,1},... 
+    'Position',[30 90 140 120],... 
+    'string','Household Costs:',...   
+    'BackgroundColor',white,...    
+    'FontName','arial',... 
+    'FontWeight','bold',...    
+    'FontSize',12); bill_txt2 = uicontrol('Style', 'text',... 
+    'Parent', TabHandles{4,1},... 
+    'Position',[15 55 170 130],... 
+    'string',ctxt,... 
+    'BackgroundColor',white,... 
+    'FontName','arial',... 
+    'FontWeight','bold',... 
+    'FontSize',11); % Display Home ESS SOC Gauge 
+axes('Units','pixels','Parent',TabHandles{4,1},'Position',[30 230 140 200]); 
+area2 = area([0 1],[(ESS/100) (ESS/100)]); 
+set(gca,'xtick',[]); set(gca,'ytick',[]); set(gca,'xlim',[0 1]); set(gca,'ylim',[0 1]); 
+if ESS <= 25  
+    set(area2,'FaceColor','red'); 
+elseif ESS <= 40   
+    set(area2,'FaceColor','yellow');
+else 
+    set(area2,'FaceColor','green');
+end
+uicontrol('Style', 'text','Position', [30 430 140 20],'Parent',TabHandles{4,1},...
+    'string', sprintf('Home ESS: %d%%',ESS),'BackgroundColor', 'white',... 
+    'HorizontalAlignment', 'center','FontName', 'arial','FontWeight', 'bold',... 
+    'FontSize', 12); 
   
 % Display consumption (kWh) and expense ($) profiles and electrity tariff: 
 consumption_ax = axes('Parent', TabHandles{4,1},... 
@@ -696,25 +695,25 @@ consumption_ax = axes('Parent', TabHandles{4,1},...
   
 % Consumption and expense profiles: 
 axes(consumption_ax); 
-% [cons_ax1,c2,c1] = plotyy(x1,y3,x1,y1,'bar','plot'); xlabel('Time of day [hr]','FontWeight','bold'); 
-% ylabel(cons_ax1(2),'Hourly Consumption [kWh]','FontWeight', 'bold'); 
-% ylabel(cons_ax1(1),'Hourly Cost [$]','FontWeight', 'bold'); 
-% set(cons_ax1, 'xlim', [0 24]); set(cons_ax1, 'xtick', [0:1:24]); 
-% set(cons_ax1, 'FontSize', 7.5); set(cons_ax1(1), 'YColor', [0.95 0 0]); 
-% set(cons_ax1(1), 'ytick', [0:0.05:0.2]); set(cons_ax1(2), 'YColor', [0 0 0.65]); 
-% set(cons_ax1(2), 'XColor', [0 0 0.65]); 
-% set(cons_ax1(1), 'XColor', [0 0 0.65]); set(cons_ax1(2), 'ytick', [0:0.1:0.6]);
-% set(cons_ax1(2), 'ygrid', 'on'); set(c2, 'BarWidth', 1); 
-% set(c2, 'FaceColor', [0.95 0 0]); set(c1, 'Color', [0 0 0.65]);
-% set(c1, 'LineWidth', 2); set(cons_ax1,'Visible','off'); set(c1,'Visible','off'); set(c2,'Visible','off'); 
-%   
-% % Tariff graph: axes(price_ax); dgf = bar(x1,y22,1); 
-% xlabel('Time of day [hr]','FontWeight','bold'); ylabel('Electricity Price [cents/kWh]','FontWeight', 'bold'); 
-% set(gca, 'xlim', [0 24]); set(gca, 'ylim', [0 40]); set(gca, 'xtick', [0:1:24]); set(gca, 'ytick', [0:5:40]); 
-% set(gca, 'ygrid', 'on'); set(gca, 'YColor', [0 0.4 0]); set(gca, 'XColor', [0 0.4 0]); 
-% set(dgf, 'FaceColor', [0 0.7 0]); set(price_ax,'Visible','off'); 
-% set(get(price_ax,'children'),'Visible','off'); 
-%   
+[cons_ax1,c2,c1] = plotyy(x1,y3,x1,y1,'bar','plot'); xlabel('Time of day [hr]','FontWeight','bold'); 
+ylabel(cons_ax1(2),'Hourly Consumption [kWh]','FontWeight', 'bold'); 
+ylabel(cons_ax1(1),'Hourly Cost [$]','FontWeight', 'bold'); 
+set(cons_ax1, 'xlim', [0 24]); set(cons_ax1, 'xtick', [0:1:24]); 
+set(cons_ax1, 'FontSize', 7.5); set(cons_ax1(1), 'YColor', [0.95 0 0]); 
+set(cons_ax1(1), 'ytick', [0:0.05:0.2]); set(cons_ax1(2), 'YColor', [0 0 0.65]); 
+set(cons_ax1(2), 'XColor', [0 0 0.65]); 
+set(cons_ax1(1), 'XColor', [0 0 0.65]); set(cons_ax1(2), 'ytick', [0:0.1:0.6]);
+set(cons_ax1(2), 'ygrid', 'on'); set(c2, 'BarWidth', 1); 
+set(c2, 'FaceColor', [0.95 0 0]); set(c1, 'Color', [0 0 0.65]);
+set(c1, 'LineWidth', 2); set(cons_ax1,'Visible','off'); set(c1,'Visible','off'); set(c2,'Visible','off'); 
+  
+% Tariff graph: axes(price_ax); dgf = bar(x1,y22,1); 
+xlabel('Time of day [hr]','FontWeight','bold'); ylabel('Electricity Price [cents/kWh]','FontWeight', 'bold'); 
+set(gca, 'xlim', [0 24]); set(gca, 'ylim', [0 40]); set(gca, 'xtick', [0:1:24]); set(gca, 'ytick', [0:5:40]); 
+set(gca, 'ygrid', 'on'); set(gca, 'YColor', [0 0.4 0]); set(gca, 'XColor', [0 0.4 0]); 
+set(dgf, 'FaceColor', [0 0.7 0]); set(price_ax,'Visible','off'); 
+set(get(price_ax,'children'),'Visible','off'); 
+  
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% 
@@ -1132,16 +1131,16 @@ axes(consumption_ax);
 %     set(txt5,'Visible','on');  
 %     end
 %   
-%     % function for displaying information in Home Area Connection tab 
-%     function connect_callback(hObject,eventdata,handles)        
-%     netshow = 1;         vis_handle() 
-%         set(meterb, 'Visible', 'on'); 
-%         set(TabHandles2{2,1}, 'Backgroundcolor', 'white');       
-%         set(TabHandles2{1,1}, 'Backgroundcolor', [0.94 0.94 0.94]);  
-%         set(cons_ax1,'Visible','off');         set(c1,'Visible','off');  
-%         set(c2,'Visible','off');         set(price_ax, 'Visible', 'off');     
-%         set(get(price_ax,'children'),'Visible','off');   
-%     end 
+    % function for displaying information in Home Area Connection tab 
+    function connect_callback(hObject,eventdata,handles)        
+    netshow = 1;         vis_handle() 
+        set(meterb, 'Visible', 'on'); 
+        set(TabHandles2{2,1}, 'Backgroundcolor', 'white');       
+        set(TabHandles2{1,1}, 'Backgroundcolor', [0.94 0.94 0.94]);  
+        set(cons_ax1,'Visible','off');         set(c1,'Visible','off');  
+        set(c2,'Visible','off');         set(price_ax, 'Visible', 'off');     
+        set(get(price_ax,'children'),'Visible','off');   
+    end 
 %      
 %     % function for displaying information in Household Consumption tab 
 %     function home_callback(hObject,eventdata,handles)         
@@ -1215,28 +1214,28 @@ axes(consumption_ax);
 % TabSelectCallback(0,0,1); 
 % end
 % 
-%     function TabSelectCallback(~,~,SelectedTab)
-%     % All tab selection pushbuttons are greyed out and uipanels are set to 
-%     % visible off, then the selected panel is made visible and its selection 
-%     % pushbutton is highlighted. 
-% 
-%     % Set up variables 
-%     TabHandles = guidata(gcf); 
-%     NumTabs = size(TabHandles,1)-2; 
-%     white = TabHandles{NumTabs+2,2}; 
-%     grey = TabHandles{NumTabs+2,3}; 
-% 
-%         % Turn off all tabs 
-%         for TabCount = 1:NumTabs     
-%             set(TabHandles{TabCount,1},'Visible','off');     
-%             set(TabHandles{TabCount,2},'BackgroundColor',grey); 
-%         end 
-% 
-%         % Enable the selected tab 
-%         set(TabHandles{SelectedTab,1},'Visible','on'); 
-%        set(TabHandles{SelectedTab,2},'BackgroundColor',white); 
-%     end
-%           
+    function TabSelectCallback(~,~,SelectedTab)
+    % All tab selection pushbuttons are greyed out and uipanels are set to 
+    % visible off, then the selected panel is made visible and its selection 
+    % pushbutton is highlighted. 
+
+    % Set up variables 
+    TabHandles = guidata(gcf); 
+    NumTabs = size(TabHandles,1)-2; 
+    white = TabHandles{NumTabs+2,2}; 
+    grey = TabHandles{NumTabs+2,3}; 
+
+        % Turn off all tabs 
+        for TabCount = 1:NumTabs     
+            set(TabHandles{TabCount,1},'Visible','off');     
+            set(TabHandles{TabCount,2},'BackgroundColor',grey); 
+        end 
+
+        % Enable the selected tab 
+        set(TabHandles{SelectedTab,1},'Visible','on'); 
+       set(TabHandles{SelectedTab,2},'BackgroundColor',white); 
+    end
+          
     %% Models 
     % Average SOH over battery lifetime: 
 %     function 

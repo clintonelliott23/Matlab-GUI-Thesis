@@ -40,6 +40,40 @@ main_window = figure(...
 'DockControls','off',...
 'Color',white, 'resize', 'on');
 
+%% Define a cell array for panels and pushbutton handles, pushbutton labels and more 
+% NumTabs = 4;    % will have 7 tabs 
+% TabLabels = {'Home';'Battery';'Schedule';'Smart Home'}; 
+% 
+% TabHandles = cell(NumTabs,3);   % rows are for eah tab + 2 additional data rows 
+% TabHandles(:,3) = TabLabels(:,1); 
+%   
+% TabHandles{NumTabs+1,1} = main_window;         % Main figure handle 
+% TabHandles{NumTabs+1,2} = PanelWidth;      % Width of tab panel 
+% TabHandles{NumTabs+1,3} = PanelHeight;     % Height of tab panel 
+% TabHandles{NumTabs+2,1} = 0;               % Handle to default tab 2 content(set later) 
+% TabHandles{NumTabs+2,2} = white;           % Background color 
+% TabHandles{NumTabs+2,3} = grey;            % Background color 
+%   
+% %% Build the tabs 
+%      for TabNumber = 1:NumTabs 
+%         TabHandles{TabNumber,1} = uipanel('Units','pixels',... 
+%             'Visible','off','BackgroundColor',white,'BorderWidth',1,...
+%             'Position',[TabOffset TabOffset PanelWidth PanelHeight]); 
+% 
+%         TabHandles{TabNumber,2} = uicontrol('Style','pushbutton',... 
+%             'Units','pixels','BackgroundColor',grey,...         
+%             'Position',[TabOffset+(TabNumber-1)*ButtonWidth PanelHeight+TabOffset... 
+%             ButtonWidth ButtonHeight],'string',TabHandles{TabNumber,3},... 
+%                 'HorizontalAlignment','center','FontName','arial','FontWeight','bold ',... 
+%                 'FontSize',10); 
+%      end  
+% 
+%     %% Define the callbacks for the Tab Buttons 
+%     for CountTabs = 1:NumTabs 
+% 
+%     set(TabHandles{CountTabs,2},'callback',{@TabSelectCallback,CountTabs}); 
+%     end 
+
 %% Background 
 % (1)Create axis which covers the entire GUI workspace
 background_picture = axes('unit', 'pixels', 'position', [1,1,MaxWindowX,MaxWindowY]); 
@@ -54,6 +88,121 @@ uistack(background_picture, 'bottom');
 solar_psh_data = importdata('kwh_day_avg_month_nasa.mat');
 
 
+
+%% Creat overview page
+
+%% Create solar question
+y_offset = -0.05;
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.9+y_offset 0.4 0.075], 'Style', 'text',...
+    'String', 'Solar Parameter Inputs', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
+
+% Create the static text for labels
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Location', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.7+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Post Code', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.6+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Bill $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Supplier', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.4+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Tariff', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.3+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Average Daily kWhr', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.2+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Gas Mains', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.1+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Pool Connected', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+% Create the edit update text inputs
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', 'QLD', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.7+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '4814', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.6+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '550', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', 'Ergon', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.4+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '11', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.3+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '18.2', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.2+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', 'No', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.1+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', 'No', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+% Create the static text for labels
+current_system = uicontrol('Units', 'normalized', 'Position',[0.65 0.8+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Solar System', 'Visible', 'On','Backgroundcolor', 'cyan', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.7+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Size (kW)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.6+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.65 0.5+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Battery System', 'Visible', 'On','Backgroundcolor', 'cyan', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.4+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Size (kWhr)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.3+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.2+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Roof Tilt', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.1+y_offset 0.15 0.05], 'Style', 'text',...
+    'String', 'Roof Orientation', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+
+% Create the edit update text inputs
+% current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.8 0.15 0.05], 'Style', 'edit',...
+%     'String', 'QLD', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.7+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '5', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.6+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '6700', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+% current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.5 0.15 0.05], 'Style', 'edit',...
+%     'String', 'Ergon', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.4+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '13.2', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.3+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '8800', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.2+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', '25', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.1+y_offset 0.15 0.05], 'Style', 'edit',...
+    'String', 'North', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+
+
+
+
+
+
 %% Create an Entry Button
 % Create function for entry
     function entry_click(hObject, eventdata)
@@ -65,14 +214,11 @@ solar_psh_data = importdata('kwh_day_avg_month_nasa.mat');
 
 % Create a button to enter calculator
 enter_gui_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.3 0.3 0.3], 'Style', 'pushbutton',...
-    'String', 'Enter Solar Calculator', 'Visible', 'On','Callback', @entry_click,...
+    'String', 'Enter Solar Calculator', 'Visible', 'Off','Callback', @entry_click,...
     'Backgroundcolor',grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
 
-%% Create solar question
-text_solar_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
-    'String', 'Do you have a Solar System?', 'Visible', 'On',...
-    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+
 
 % Create button if has exisiting solar
 button_yes_solar = uicontrol('Units', 'normalized', 'Position',[0.1 0.3 0.3 0.3], 'Style', 'pushbutton',...
@@ -103,8 +249,9 @@ solar_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 
 
  
 
-    function [index] = size_next_button(hObject, eventdata)
+    function size_next_button(hObject, eventdata)
                 set(solar_size_next_button,'Visible','ON')
+                KW_solar_size = [1 3.5 5 7 9 15]; 
                 index = get(hObject, 'Value');         
                 solar_size_input = KW_solar_size(index) 
 
@@ -137,9 +284,10 @@ cost_solar_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 
     'String', 'How much did your solar system cost ($)?', 'Visible', 'On',...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
 
-    function [index] = cost_next_button_call(hObject, eventdata)
+    function cost_next_button_call(hObject, eventdata)
                 set(cost_next_button,'Visible','ON') 
-                
+                                               
+                solar_cost = [4 5 6 7 8 9 10 11 13 14 16];                
                 index = get(hObject, 'Value');         
                 cost_solar_input = solar_cost(index) 
     end
@@ -504,9 +652,68 @@ TabLabels = {'Home';'Battery';'Schedule';'Smart Home'};
 
 
 
+%% Set up 
+% Set tabs and tab labels 
+NumTabs = 4;    % will have 7 tabs 
+TabLabels = {'Home';'Battery';'Schedule';'Smart Home'}; 
+
+%    function [test] = func_test(val)
+%        test = val*4     ;   
+%    end
+% johnny = 45;
+% result = func_test(johnny)
+
+%
+%% Cost Analysis
+size_system = 5
+kwhr_year = 18*365
+
+install_cost = 5000
+maintenance_cost = 0.015*install_cost
+salvage_cost = size_system*0.21*1000
+
+LCC = install_cost + maintenance_cost - salvage_cost
+
+inflation_rate = 0.03
+discount_rate = 0.04
+mortgage_rate = 0.06
+n_years = 20 % or maybe 25
+ 
+x_unitless = (1 + inflation_rate)/(1 + discount_rate)
+pa = (1 - x_unitless^(n_years))/(1 - x_unitless)
+pa1 = x_unitless*pa
+
+ALCC = LCC/pa
+
+ANNPMT = LCC *mortgage_rate*(   ((1+mortgage_rate)^n_years)  /  (((1+mortgage_rate)^n_years)-1)  )
+
+electricity_cost_ALCC = ALCC/kwhr_year
+electricity_cost_ANNPMT = ANNPMT/kwhr_year
 
 
 
 
+end
+%%   Callback for Tab Selection
+function TabSellectCallback(~,~,SelectedTab)
+%   All tab selection pushbuttons are greyed out and uipanels are set to
+%   visible off, then the selected panel is made visible and it's selection
+%   pushbutton is highlighted.
+
+    %   Set up some varables
+        TabHandles = guidata(gcf);
+        NumberOfTabs = size(TabHandles,1)-2;
+        White = TabHandles{NumberOfTabs+2,2};            % White      
+        BGColor = TabHandles{NumberOfTabs+2,3};          % Light Grey
+        
+    %   Turn all tabs off
+        for TabCount = 1:NumberOfTabs
+            set(TabHandles{TabCount,1}, 'Visible', 'off');
+            set(TabHandles{TabCount,2}, 'BackgroundColor', BGColor);
+        end
+        
+    %   Enable the selected tab
+        set(TabHandles{SelectedTab,1}, 'Visible', 'on');        
+        set(TabHandles{SelectedTab,2}, 'BackgroundColor', White);
 
 end
