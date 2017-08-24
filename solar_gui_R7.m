@@ -129,7 +129,7 @@ grey = 0.9*white;
         %%   Define Tab 1 content
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
 prompt_page = 1;    
-
+persistent index;
 
 
 %% Create an Entry Button
@@ -167,6 +167,7 @@ button_no_gas_mains = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0
     'String', 'No', 'Visible', 'On','Callback', @gas_click,'Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
+persistent gas_mains
 
 % Create function for entry
     function gas_click(hObject, eventdata)
@@ -221,7 +222,12 @@ button_no_pool = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3], 
                 
                 set(text_solar_question,'Visible','ON') 
                 set(button_yes_solar,'Visible','ON') 
-                set(button_no_solar,'Visible','ON')  
+                set(button_no_solar,'Visible','ON')
+                
+                set(solar_size_value, 'String', '0') 
+                set(solar_cost_value, 'String', '0')
+                set(battery_size_value, 'String', '0') 
+                set(battery_cost_value, 'String', '0') 
     end
 
 %% Solar Question
@@ -256,7 +262,8 @@ solar_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 
     'String', 'What is the size of your Solar System (KW)?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
 
-persistent index;
+
+
     function size_next_button(hObject, eventdata)
                 set(solar_size_next_button,'Visible','ON')
                 index = get(hObject, 'Value');         
@@ -269,7 +276,7 @@ persistent index;
 KW_solar_size = [1 3.5 5 7 9 15];
 
 %Set up pop up menu with pulldown data
-KW_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu',...
+KW_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
     'String', KW_solar_size,'Callback', @size_next_button, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
 
 
@@ -297,13 +304,13 @@ cost_solar_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 
                                                              
                 index = get(hObject, 'Value');         
                 cost_solar_input = solar_cost(index) 
-                set(solar_cost_value, 'String', num2str(KW_solar_size(index)))               
+                set(solar_cost_value, 'String', num2str(solar_cost(index)))               
     end
 
 solar_cost = [4 5 6 7 8 9 10 11 13 14 16];
 
 %Set up pop up menu with pulldown data
-cost_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu',...
+cost_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
     'String', solar_cost,'Callback', @cost_next_button_call, 'tag', 'cost_menu', 'Visible', 'OFF', 'FontSize', 20);
 
 
@@ -318,9 +325,7 @@ cost_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1
                 set(text_solar_question,'Visible','OFF') 
                 set(button_yes_solar,'Visible','OFF') 
                 set(button_no_solar,'Visible','OFF')       
- 
-                set(solar_size_value, 'String', '0') 
-                set(solar_cost_value, 'String', '0')                  
+      
                 
                 set(cost_solar_question,'Visible','OFF') 
                 set(cost_popupmenu,'Visible','OFF')                
@@ -355,7 +360,7 @@ button_no_battery = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3
     end
 
 
- battery_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+battery_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
     'String', 'What is the size of your Battery (KWHR)?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
 
@@ -363,31 +368,64 @@ KWHR_battery_size = [1 2 4 6 8 12];
 %Set up pop up menu with pulldown data
 
 KWHR_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
-    'String', KWHR_battery_size,'Callback', @display_battery_next_button, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+    'String', KWHR_battery_size,'Callback', @battery_size_next_pop, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
 
 % Create button if has exisiting solar
 battery_size_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
-    'String', 'Next','Visible', 'On','Callback', @battery_click_no,'Parent', TabHandles{prompt_page,1},...
+    'String', 'Next','Visible', 'On','Callback', @battery_cost,'Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
-    function display_battery_next_button(hObject, eventdata)
-                set(battery_size_next_button,'Visible','ON') 
+    function battery_size_next_pop(hObject, eventdata)
+                set(battery_size_next_button,'Visible','On')      
                 
                 index = get(hObject, 'Value');         
                 battery_size_input = KWHR_battery_size(index)
-                set(battery_size_value, 'String', num2str(KWHR_battery_size(index)))  
+                set(battery_size_value, 'String', num2str(KWHR_battery_size(index))) 
+                
     end
 
-% 
+%% How much did ya solar cost bra 
+    function battery_cost(hObject, eventdata)
+                set(battery_size_question,'Visible','OFF') 
+                set(KWHR_popupmenu,'Visible','OFF') 
+                set(battery_size_next_button,'Visible','OFF')
+       
+                set(cost_battery_question,'Visible','ON') 
+                set(battery_cost_popupmenu,'Visible','ON')      
+    end
+
+cost_battery_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+    'String', 'How much did your battery cost ($)?','Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');   
+
+battery_cost_list = [3000 4000 5000 6000 7000 8000 9000 10000];
+
+battery_cost_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
+    'String', battery_cost_list,'Callback', @cost_bat_next_button, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+
+    function cost_bat_next_button(hObject, eventdata)
+                set(battery_cost_next_button,'Visible','ON') 
+                                                             
+                 index = get(hObject, 'Value')        
+                 battery_cost_input = battery_cost_list(index) 
+                 set(battery_cost_value, 'String', num2str(battery_cost_list(index)))               
+    end
+
+% Create button if has exisiting solar
+battery_cost_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'Off','Callback', @battery_click_no,'Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
+
+
 % Create function for battery question
     function battery_click_no(hObject, eventdata)
                 set(text_battery_question,'Visible','OFF') 
                 set(button_yes_battery,'Visible','OFF') 
                 set(button_no_battery,'Visible','OFF')
-                
-                set(battery_size_question,'Visible','OFF') 
-                set(KWHR_popupmenu,'Visible','OFF')      
-                set(battery_size_next_button,'Visible','OFF') 
+                                   
+                set(cost_battery_question,'Visible','Off') 
+                set(battery_cost_popupmenu,'Visible','Off')         
+                set(battery_cost_next_button,'Visible','Off') 
                   
                 set(text_roof_question,'Visible','ON') 
                 set(tilt_popupmenu,'Visible','ON')                       
@@ -411,6 +449,7 @@ tilt_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15
                                  
                  index = get(hObject, 'Value');         
                  roof_tilt_input = roof_tilt(index) 
+                 set(tilt_value,'string', num2str(roof_tilt(index)))
     end
  
 % Create button if has exisiting solar
@@ -502,10 +541,11 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
        
                 % Select the tag of each chosen object
         string = get(hObject, 'tag');
-                    
+                
 % Find which popupmenu was selected and update the variable display box
             if strcmp(string, 'N')
-                set(orientation_edit_display, 'String', 'North'); orientation_input = 1               
+                set(orientation_edit_display, 'String', 'North'); orientation_input = 1
+                set(orientation_value, 'String', 'North');
             elseif strcmp(string, 'S')    
                 set(orientation_edit_display, 'String', 'South') ; orientation_input = 3  
             elseif strcmp(string, 'E')
@@ -514,8 +554,10 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
                 set(orientation_edit_display, 'String', 'West')  ; orientation_input = 4  
             elseif strcmp(string, 'NE')    
                 set(orientation_edit_display, 'String', 'North-East') ; orientation_input = 5  
+                 set(orientation_value, 'String', 'North-East') ;
             elseif strcmp(string, 'NW')
-                set(orientation_edit_display, 'String', 'North-West') ; orientation_input = 8               
+                set(orientation_edit_display, 'String', 'North-West') ; orientation_input = 8  
+                set(orientation_value, 'String', 'North-West') ;
             elseif strcmp(string, 'SE')    
                 set(orientation_edit_display, 'String', 'South-East') ; orientation_input = 6   
             elseif strcmp(string, 'SW')    
@@ -542,7 +584,8 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
                 set(radio_west_button,'Visible','Off');                 set(radio_south_west_button,'Visible','Off')  
    
                  set(text_state_question,'Visible','On'); 
-                 set(postcode_edit,'Visible','On'); 
+                 set(postcode_edit,'Visible','On');
+                 
     end
 
 
@@ -571,7 +614,8 @@ postcode_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1],
                        if value == state_codes(i)
                          set(state_display_button, 'String', state_names(i))                              
                          set(state_next_button,'Visible','ON')
-                         disp(state_names(i))
+                         set(state_value, 'String', state_names(i)) 
+                         set(postal_value, 'String', num2str(value))                        
                        end   
         end        
     end
@@ -611,10 +655,12 @@ bill_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1], 'St
        % Select the tag of each chosen object
         bill = str2double(get(bill_edit,'string'))
         set(bill_next_button,'Visible','ON')
+        set(bill_value, 'String', get(bill_edit,'string'))   
+
     end
 
 % Create button for next
-bill_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.1], 'Style', 'pushbutton',...
+bill_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
     'String', 'Next','Visible', 'Off','Callback', @bill_click,'Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
@@ -625,7 +671,8 @@ bill_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.1
                 set(bill_next_button,'Visible','Off')  
                 
                 set(number_people_question,'Visible','On')  
-                set(people_popupmenu,'Visible','On')                
+                set(people_popupmenu,'Visible','On')   
+                
     end
 %% Create number of people questions
 % Create function people
@@ -638,7 +685,8 @@ number_people_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0
                 set(people_next_button,'Visible','ON')
 
                 index = get(hObject, 'Value');         
-                number_people_input = number_people(index)              
+                number_people_input = number_people(index) 
+                set(occupants_value, 'String', num2str(number_people(index)))   
     end
 
 number_people = [0 1 2 3 4];
@@ -713,26 +761,26 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
 y_offset = -0.05;
 input_page = 2;
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.9+y_offset 0.4 0.075], 'Style', 'text','Parent', TabHandles{input_page,1},...
+solar_title = uicontrol('Units', 'normalized', 'Position',[0.3 0.9+y_offset 0.4 0.075], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Solar Parameter Inputs', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
 
 % Create the static text for labels
 current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Location', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+postal_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Post Code', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.6+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+bill_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.6+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Bill $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+supplier_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Supplier', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+tariff_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Tariff', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+occupants_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', '# Occupants', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
 gas_main_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
@@ -742,32 +790,32 @@ pool_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.1+y_offset 0.15 
     'String', 'Pool Connected', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
 % Create the edit update text inputs
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', 'QLD', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+state_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '4814', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+postal_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '550', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+bill_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', 'Ergon', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+supplier_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+tariff_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
     'String', '11', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.3+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '3 People', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+occupants_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.3+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 gas_main_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', 'No', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 pool_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', 'No', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 % Create the static text for labels
-current_system = uicontrol('Units', 'normalized', 'Position',[0.65 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+system_title = uicontrol('Units', 'normalized', 'Position',[0.65 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'System Specifications', 'Visible', 'On','Backgroundcolor', 'cyan', 'Foregroundcolor', 'black', 'FontSize', 10);
 
 solar_size_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
@@ -782,34 +830,34 @@ battery_size_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.5+y_off
 battery_cost_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', ' Battery Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+tilt_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Roof Tilt (Degrees)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.55 0.1+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+orientation_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.1+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Roof Orientation', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
 % Create the edit update text inputs
 
 solar_size_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '5', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 solar_cost_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '6700', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 battery_size_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '13.2', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 battery_cost_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '8800', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.65 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+roofspec_title = uicontrol('Units', 'normalized', 'Position',[0.65 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
     'String', 'Roof Specifications', 'Visible', 'On','Backgroundcolor', 'cyan', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '25', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+tilt_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.75 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', 'North', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+orientation_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Define Tab 3 content
@@ -1111,3 +1159,4 @@ function TabSellectCallback(~,~,SelectedTab)
        
         
 end
+
