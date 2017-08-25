@@ -536,7 +536,7 @@ orientation_next_button = uicontrol('Units', 'normalized', 'Position',[0.67 0.26
 
 % Create button if has exisiting solar
 orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.37 0.3 0.1], 'Style', 'text',...
-    'tag','orientation_selection', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
+    'tag','orientation_selection', 'Visible', 'Off',...
     'Backgroundcolor', 'white', 'Foregroundcolor', 'black', 'FontSize', 20);
 
 % Create function for entry
@@ -609,8 +609,7 @@ state_names = ["QLD", "NSW", "VIC"];
 
 postcode_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1], 'Style', 'edit','Parent', TabHandles{prompt_page,1},...
    'Callback', @state_check_next, 'tag', 'state_entry', 'Visible', 'Off', 'FontSize', 20);
-
-persistent state_input
+   
     function state_check_next(hObject, eventdata)    
        % Select the tag of each chosen object
         state_input = str2double(get(postcode_edit,'string'));
@@ -624,8 +623,7 @@ persistent state_input
                          set(state_value, 'String', state_names(i)) 
                          set(postal_value, 'String', num2str(state_input)) 
                          set(tariff_value, 'String', '11')
-                         set(supplier_value, 'String', 'Ergon')
-               PSH(solar_size_input,cost_solar_input,roof_tilt_input,state_input)
+                            set(supplier_value, 'String', 'Ergon')
                        end   
         end        
     end
@@ -776,9 +774,7 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                                                     set(tariff_value, 'String', '11')
                                                     set(supplier_value, 'String', 'Ergon')
                     TabSellectCallback(0,0,2);   
-                                                    set(enter_gui_button,'Visible','On')
-                   
-                    PSH(solar_size_input,cost_solar_input,roof_tilt_input,state_input)                               
+                                                    set(enter_gui_button,'Visible','On') 
     end
 
 
@@ -985,7 +981,7 @@ current_system = uicontrol('Units', 'normalized', 'Position',[0.8 0.575+y_prod_o
 
 % Calculation of PSH from tilt angle
 
-    function PSH(solar_size_input,cost_solar_input,roof_tilt_input,state_input)
+    function PSH(solar_size_input,cost_solar_input,roof_tilt_input)
 %            if  ((solar_size_input >= 0) & (solar_size_input <= 5))
 %                size_row = 1;
 %                disp('fuck size')
@@ -993,8 +989,8 @@ current_system = uicontrol('Units', 'normalized', 'Position',[0.8 0.575+y_prod_o
 %                disp('fuck size also')
 %            end
            
-
-        johnny =     solar_size_input *    roof_tilt_input * state_input
+ disp(solar_size_input); disp(cost_solar_input); disp(roof_tilt_input);
+               
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Define Tab 4 content (TAB JUMP)
