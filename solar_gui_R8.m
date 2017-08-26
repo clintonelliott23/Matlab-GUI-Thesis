@@ -20,12 +20,12 @@ set(0,'DefaultFigureVisible','on');
 %% Load Essential Data and Updates
 % NASA Data
 solar_psh_data = importdata('kwh_day_avg_month_nasa.mat');
-       
+kwhr_avg_data = importdata('gov_kwhr_avg_data.mat');
         
    %% Find Screen Size and Calculate Window
 % Size of primary display, returned as a four-element vector of the form [left bottom width height].
 set(0,'units','pixels');
-ScreenSize = get(0, 'ScreenSize') % SC will be an array of [u v x y]
+ScreenSize = get(0, 'ScreenSize'); % SC will be an array of [u v x y]
 MaxMonitorwidth = ScreenSize(3);
 MaxMonitorheight = ScreenSize(4);
 % Set figure window size
@@ -148,7 +148,7 @@ enter_gui_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.3 0.3 0.3
                 set(button_no_gas_mains,'Visible','ON')  
    
                set(prefill_button,'Visible','On') 
-               Update_Values()
+
     end
 
 
@@ -169,7 +169,7 @@ button_no_gas_mains = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0
     'String', 'No', 'Visible', 'On','Callback', @gas_click,'Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
-persistent gas_mains
+persistent gas_mains_input
 
 % Create function for entry
     function gas_click(hObject, eventdata)
@@ -180,11 +180,11 @@ persistent gas_mains
                 % Find the answer
                 string = get(hObject, 'tag');               
                 if strcmp(string, 'gas_yes') == 1
-                gas_mains = 1
+                gas_mains_input = 1
                 set(gas_main_value, 'String', 'Yes')
                 else
                  set(gas_main_value, 'String', 'No')  
-                 gas_mains = 0   
+                 gas_mains_input = 0   
                 end
                 
                 set(pool_question,'Visible','ON') 
@@ -207,7 +207,7 @@ button_no_pool = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3], 
     'String', 'No', 'Visible', 'On','Callback', @pool_click,'Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
-
+persistent pool_input;
 % Create function for entry
     function pool_click(hObject, eventdata)
                 set(pool_question,'Visible','Off') 
@@ -217,11 +217,11 @@ button_no_pool = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3], 
               % Find the answer
                 string = get(hObject, 'tag');               
                 if strcmp(string, 'pool_yes') == 1
-                pool_connected = 1
+                pool_input = 1
                 set(pool_value, 'String', 'Yes')
                 else
                  set(pool_value, 'String', 'NO')
-                 pool_connected = 0   
+                 pool_input = 0   
                 end 
                 
                 set(text_solar_question,'Visible','ON') 
@@ -252,12 +252,13 @@ button_no_solar = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3],
 
 
 %% Solar "YES" what is the size
+persistent perf_ratio_input
     function solar_click_yes(hObject, eventdata)
                 set(text_solar_question,'Visible','OFF') 
                 set(button_yes_solar,'Visible','OFF') 
                 set(button_no_solar,'Visible','OFF')
                 solar_installed = 1
-
+                perf_ratio_input = 0.85;
                 set(solar_size_question,'Visible','ON') 
                 set(KW_popupmenu,'Visible','ON')      
     end
@@ -455,7 +456,6 @@ persistent roof_tilt_input
                  index = get(hObject, 'Value');         
                   roof_tilt_input = roof_tilt(index) ;
                  set(tilt_value,'string', num2str(roof_tilt(index)))
-
     end
 
 % Create button if has exisiting solar
@@ -625,7 +625,7 @@ persistent state_input
                          set(postal_value, 'String', num2str(state_input)) 
                          set(tariff_value, 'String', '11')
                          set(supplier_value, 'String', 'Ergon')
-               PSH(solar_size_input,cost_solar_input,roof_tilt_input,state_input)
+               
                        end   
         end        
     end
@@ -690,7 +690,7 @@ number_people_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0
     'String', 'How many occupants in the residence?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);   
 
-
+persistent number_people_input;
     function display_people_next_button(hObject, eventdata)
                 set(people_next_button,'Visible','ON')
 
@@ -716,6 +716,7 @@ people_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0
                 set(number_people_question,'Visible','Off')  
                 set(people_popupmenu,'Visible','Off') 
                 set(people_next_button,'Visible','Off') 
+PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input,number_people_input,gas_mains_input, pool_input)                    
                 
                 TabSellectCallback(0,0,2);
                  set(enter_gui_button,'Visible','On') 
@@ -759,26 +760,27 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                                                     set(enter_gui_button,'Visible','OFF') 
                                                     set(prefill_button,'Visible','OFF')
 
-                                                    set(gas_main_value, 'String', 'Yes')
-                                                    set(pool_value, 'String', 'Yes')
+                    gas_mains_input = 0;                                set(gas_main_value, 'String', 'Yes')
+                    pool_input = 0;                                set(pool_value, 'String', 'Yes')
                     solar_installed = 1;                    
-                    solar_size_input =5000;         set(solar_size_value, 'String', num2str(solar_size_input))
+                    solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
                     cost_solar_input =9;            set(solar_cost_value, 'String', num2str(cost_solar_input))
                     battery_size_input =  6.5;      set(battery_size_value, 'String', num2str(battery_size_input) )
                     battery_cost_input =  8.9;      set(battery_cost_value, 'String', num2str(battery_cost_input) )                    
                     roof_tilt_input = 25;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
                     orientation_input = 1;          set(orientation_value, 'String', 'North')
                     bill = 550;                     set(bill_value, 'String', num2str(bill) )
-                    number_people_input = 3;        set(occupants_value, 'String', num2str(number_people_input))
-                    
-                    state_input =  4814;            set(state_value, 'String', 'QLD') ; 
+                    number_people_input = 4;        set(occupants_value, 'String', num2str(number_people_input))
+                    perf_ratio_input = 0.85;
+                    state_input =  4825;            set(state_value, 'String', 'QLD') ; 
                                                     set(postal_value, 'String', '4814')                                          
                                                     set(tariff_value, 'String', '11')
                                                     set(supplier_value, 'String', 'Ergon')
                     TabSellectCallback(0,0,2);   
                                                     set(enter_gui_button,'Visible','On')
                    
-                    PSH(solar_size_input,cost_solar_input,roof_tilt_input,state_input)                               
+PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input,number_people_input,gas_mains_input, pool_input)                    
+  
     end
 
 
@@ -912,10 +914,10 @@ current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_o
     'String', 'Total Exported', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
         
 % Edit boxes for production
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+daily_usuage_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+daily_production_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
@@ -925,31 +927,6 @@ current_system = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_prod_o
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 
-% Create axis for graph
-    %   Plot a sine function
-        PlotOffset = 40;
-        haxes2 = axes('Parent', TabHandles{production_page,1}, ...
-            'Units', 'normalized', ...
-            'Position', [0.075 0.1 0.9 0.45]);
-        plot(haxes2, 1:12, sin((1:12)./12));
-        
-        % Label, Dimension and Legent the GRPAH
-title('Raw Siganal with Associated Noise','Color','yellow');
-xlabel('Months)');                      ylabel('Production (kWhr)');          
-% xlim([4000, 6000]);                  %ylim([4000, 6000]);
-% legend({'RAW Signal'});
-set(gca, ...
-  'Box'         , 'off'     , ...
-  'TickDir'     , 'out'     , ...
-  'TickLength'  , [.01 .01] , ...
-  'XMinorTick'  , 'on'      , ...
-  'YMinorTick'  , 'on'      , ...
-  'YGrid'       , 'off'      , ...
-  'XGrid'       , 'on'      , ...
-  'XColor'      , 'yellow', ...
-  'YColor'      , 'yellow', ...
-  'LineWidth'   , 2         );
-% End of Graph Labelling
 
 
 % Estimated daily savings
@@ -985,17 +962,118 @@ current_system = uicontrol('Units', 'normalized', 'Position',[0.8 0.575+y_prod_o
 
 % Calculation of PSH from tilt angle
 
-    function PSH(solar_size_input,cost_solar_input,roof_tilt_input,state_input)
-%            if  ((solar_size_input >= 0) & (solar_size_input <= 5))
-%                size_row = 1;
-%                disp('fuck size')
-%            else
-%                disp('fuck size also')
-%            end
-           
+    function PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input,number_people_input,gas_mains_input, pool_input)    
+                 
+        PSH_avg =  tilt_calculator (roof_tilt_input,13);
+        disp('Peak Sun Hours');   disp(PSH_avg);   
+        
+      
+        kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
+        disp('Average Kilowatts Hours For Household');   disp(kwhr_avg_found);   
+        
+       kw_produced_daily = solar_size_input *  PSH_avg * perf_ratio_input
 
-        johnny =     solar_size_input *    roof_tilt_input * state_input
+        Update_Values(kwhr_avg_found,kw_produced_daily)
+        production_graph()
     end
+
+% Function for findin the liner change between nasa data
+    function [PSH_avg] =  tilt_calculator (roof_tilt_input,month)
+        
+                if  ((roof_tilt_input >= 0) & (roof_tilt_input <= 4))
+                    max_tilt = 4;                      min_tilt = 0;
+                    max_psh = solar_psh_data(2,month);     min_psh = solar_psh_data(1,month);
+               elseif ((roof_tilt_input > 4) & (roof_tilt_input <= 19))
+                    max_tilt = 19;                      min_tilt = 4;
+                    max_psh = solar_psh_data(3,month);     min_psh = solar_psh_data(2,month);
+               elseif ((roof_tilt_input > 19) & (roof_tilt_input <= 34))
+                    max_tilt = 34;                      min_tilt = 19;
+                    max_psh = solar_psh_data(4,month);     min_psh = solar_psh_data(3,month);
+               elseif ((roof_tilt_input> 34) & (roof_tilt_input <= 90))
+                    max_tilt = 90;                      min_tilt = 34;
+                    max_psh = solar_psh_data(5,month);     min_psh = solar_psh_data(4,month);
+                end
+                
+                div_step = (max_psh - min_psh)/(max_tilt-min_tilt);
+                tilt_offset = (roof_tilt_input - min_tilt) * div_step ;
+                PSH_avg =  tilt_offset + min_psh;
+    end
+
+
+
+    function production_graph()
+
+                    % Create axis for graph
+                    %   Plot a sine function
+                        PlotOffset = 40;
+                        haxes2 = axes('Parent', TabHandles{production_page,1}, ...
+                            'Units', 'normalized', ...
+                            'Position', [0.075 0.1 0.9 0.45]);
+       
+                        month_name = categorical({'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Avg'});               
+       
+        
+        for i = 1:1:13
+                        kw_produced_daily = solar_size_input *  tilt_calculator (roof_tilt_input,i) * perf_ratio_input;
+                        bar(haxes2,month_name(1,i), kw_produced_daily,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                        hold all
+        end
+
+                        % Label, Dimension and Legent the GRPAH
+                title('Monthly Average kWhr Production','Color','yellow','FontSize', 13);
+                xlabel('Month');                      ylabel('Production (kWhr)');                    
+                % legend({'RAW Signal'});
+                set(gca, ...
+                  'Box'         , 'off'     , ...
+                  'TickDir'     , 'out'     , ...
+                  'TickLength'  , [.01 .01] , ...
+                  'XMinorTick'  , 'on'      , ...
+                  'YMinorTick'  , 'on'      , ...
+                  'YGrid'       , 'on'      , ...
+                  'XGrid'       , 'off'      , ...
+                  'Color',grey, 'FontSize', 13,...           
+                  'XColor'      , 'yellow', ...
+                  'YColor'      , 'yellow', ...
+                  'LineWidth'   , 3         );
+                % End of Graph Labelling
+
+    end
+
+
+    function [kwhr_avg_found] = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)
+                column = 5;
+                row = 1;
+        switch state_input
+                        case 4814                        
+                        case 4825
+                            row = row + 16;
+                        case 4827
+                             row = row + 16;
+                    end                            
+                                 
+                    switch number_people_input
+                        case 3
+                            row = row +4;
+                        case 2
+                            row = row +8;
+                        case 1
+                            row = row +12;
+                    end
+
+                       switch pool_input                     
+                        case 1
+                            row = row +2;
+                       end
+                       
+                       switch gas_mains_input
+                        case 1
+                            row = row +1;
+                       end
+                       
+              kwhr_avg_found = kwhr_avg_data(row,column);    
+    end
+        
+        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Define Tab 4 content (TAB JUMP)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1144,36 +1222,36 @@ uistack(background_picture, 'bottom');
 
 %
 %% Cost Analysis (TAB JUMP)
-size_system = 5
-kwhr_year = 18*365
+% size_system = 5
+% kwhr_year = 18*365
+% 
+% install_cost = 5000
+% maintenance_cost = 0.015*install_cost
+% salvage_cost = size_system*0.21*1000
+% 
+% LCC = install_cost + maintenance_cost - salvage_cost
+% 
+% inflation_rate = 0.03
+% discount_rate = 0.04
+% mortgage_rate_best = 0.01
+% mortgage_rate_worst = 0.06
+% n_years = 20 % or maybe 25
+%  
+% x_unitless = (1 + inflation_rate)/(1 + discount_rate)
+% pa = (1 - x_unitless^(n_years))/(1 - x_unitless)
+% pa1 = x_unitless*pa
+% 
+% ALCC = LCC/pa
+% 
+% ANNPMT = LCC *mortgage_rate_best*(   ((1+mortgage_rate_best)^n_years)  /  (((1+mortgage_rate_best)^n_years)-1)  )
+% 
+% electricity_cost_ALCC = ALCC/kwhr_year
+% electricity_cost_ANNPMT = ANNPMT/kwhr_year
 
-install_cost = 5000
-maintenance_cost = 0.015*install_cost
-salvage_cost = size_system*0.21*1000
 
-LCC = install_cost + maintenance_cost - salvage_cost
-
-inflation_rate = 0.03
-discount_rate = 0.04
-mortgage_rate_best = 0.01
-mortgage_rate_worst = 0.06
-n_years = 20 % or maybe 25
- 
-x_unitless = (1 + inflation_rate)/(1 + discount_rate)
-pa = (1 - x_unitless^(n_years))/(1 - x_unitless)
-pa1 = x_unitless*pa
-
-ALCC = LCC/pa
-
-ANNPMT = LCC *mortgage_rate_best*(   ((1+mortgage_rate_best)^n_years)  /  (((1+mortgage_rate_best)^n_years)-1)  )
-
-electricity_cost_ALCC = ALCC/kwhr_year
-electricity_cost_ANNPMT = ANNPMT/kwhr_year
-
-
-function Update_Values()
-                                                    set(gas_main_value, 'String', 'Yes')
-                                                    set(pool_value, 'String', 'Yes')
+function Update_Values(kwhr_avg_found,kw_produced_daily)
+      set(daily_usuage_value,'string', num2str(kwhr_avg_found))
+      set(daily_production_value,'string', num2str(kw_produced_daily))
 end
 
 end
