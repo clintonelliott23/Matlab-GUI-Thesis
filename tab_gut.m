@@ -12,7 +12,11 @@ function TabDemo
 %   First clear everything
         clear all
         clc
-        
+
+if nargout ~= 0
+  FigHandle = FigH;
+end
+    
 %   Set Number of tabs and tab labels.  Make sure the number of tab labels
 %   match the HumberOfTabs setting.
         NumberOfTabs = 4;               % Number of tabs to be generated
@@ -239,5 +243,5 @@ end
 
     %   Make Image Tab active
         TabSellectCallback(0,0,2);
-    
+    figure()
     end
