@@ -756,10 +756,12 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
 
 % Pre fills all the data instead of going through the process
     function prefill(hObject, eventdata)
-                                                    set(enter_gui_button,'Visible','OFF') 
-                                                    set(prefill_button,'Visible','OFF')
+                set(gas_mains_question,'Visible','Off') 
+                set(button_yes_gas_mains,'Visible','Off') 
+                set(button_no_gas_mains,'Visible','Off')  ;   set(enter_gui_button,'Visible','OFF') 
+                set(prefill_button,'Visible','OFF')
 
-                    gas_mains_input = 0;                                set(gas_main_value, 'String', 'Yes')
+                    gas_mains_input = 0;                           set(gas_main_value, 'String', 'Yes')
                     pool_input = 0;                                set(pool_value, 'String', 'Yes')
                     solar_installed = 1;                    
                     solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
