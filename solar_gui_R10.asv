@@ -1002,7 +1002,7 @@ persistent daily_savings
         Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tariff_rate_normal_found,daily_exported,daily_imported,daily_savings)
          production_graph() 
          cost_analysis(daily_savings)
-          
+         finance_graph()
     end
 
 % Function for findin the liner change between nasa data
@@ -1040,15 +1040,17 @@ persistent daily_savings
                             'Units', 'normalized', ...
                             'Position', [0.075 0.1 0.9 0.45]);
        
-                        month_name = nominal({'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Avg'});               
-       
+            month_name = ({'Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';'Avg'});         
         
         for i = 1:1:13
                         kw_produced_daily = solar_size_input *  tilt_calculator (roof_tilt_input,i) * perf_ratio_input;
-                        bar(haxes2,month_name(1,i), kw_produced_daily,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                        bar_data_plot(1,i) =  kw_produced_daily
                         hold all
         end
-
+        
+        bar(haxes2,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+        set(gca,'xticklabel',month_name)
+        
                         % Label, Dimension and Legent the GRPAH
                 title('Monthly Average kWhr Production','Color','yellow','FontSize', 13);
                 xlabel('Month');                      ylabel('Production (kWhr)');                    
@@ -1135,7 +1137,10 @@ ANNPMT_likely_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.65+y_pr
         
 ANNPMT_pess_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
     'String', 'ANNPMT Pessimistic', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-        
+   
+ROI_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+    'String', 'ROI%', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+    
 % Edit boxes for production
 ALCC_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
@@ -1149,34 +1154,43 @@ ANNPMT_likely_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.65+y_pr
 ANNPMT_pess_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
+ROI_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Create axis for graph
-    %   Plot a sine function
-        PlotOffset = 40;
-        haxes2 = axes('Parent', TabHandles{finance_page,1}, ...
-            'Units', 'normalized', ...
-            'Position', [0.075 0.1 0.9 0.45]);
-        plot(haxes2, 1:12, sin((1:12)./12));
-        
-        % Label, Dimension and Legent the GRPAH
-title('Raw Siganal with Associated Noise','Color','yellow');
-xlabel('Months)');                      ylabel('Production (kWhr)');          
-% xlim([4000, 6000]);                  %ylim([4000, 6000]);
-% legend({'RAW Signal'});
-set(gca, ...
-  'Box'         , 'off'     , ...
-  'TickDir'     , 'out'     , ...
-  'TickLength'  , [.01 .01] , ...
-  'XMinorTick'  , 'on'      , ...
-  'YMinorTick'  , 'on'      , ...
-  'YGrid'       , 'off'      , ...
-  'XGrid'       , 'on'      , ...
-  'XColor'      , 'yellow', ...
-  'YColor'      , 'yellow', ...
-  'LineWidth'   , 2         );
-% End of Graph Labelling
+    function finance_graph()
+        % Create axis for graph
+            %   Plot a sine function
+                PlotOffset = 40;
+                haxes2 = axes('Parent', TabHandles{finance_page,1}, ...
+                    'Units', 'normalized', ...
+                    'Position', [0.075 0.1 0.9 0.35]);
+                plot(haxes2, 1:12, sin((1:12)./12));
 
+%           for i = 1:1:20
+%                          kw_produced_daily = solar_size_input *  tilt_calculator (roof_tilt_input,i) * perf_ratio_input;
+%                          bar(haxes2,month_name(1,i), kw_produced_daily,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+%                          hold all
+%          end               
+                
+                % Label, Dimension and Legent the GRPAH
+        title('Raw Siganal with Associated Noise','Color','yellow');
+        xlabel('Months)');                      ylabel('Production (kWhr)');          
+        % xlim([4000, 6000]);                  %ylim([4000, 6000]);
+        % legend({'RAW Signal'});
+        set(gca, ...
+          'Box'         , 'off'     , ...
+          'TickDir'     , 'out'     , ...
+          'TickLength'  , [.01 .01] , ...
+          'XMinorTick'  , 'on'      , ...
+          'YMinorTick'  , 'on'      , ...
+          'YGrid'       , 'off'      , ...
+          'XGrid'       , 'on'      , ...
+          'XColor'      , 'yellow', ...
+          'YColor'      , 'yellow', ...
+          'LineWidth'   , 2         );
+        % End of Graph Labelling
 
+    end
 % Estimated daily savings
 savings_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.875+y_prod_offset 0.375 0.07], 'Style', 'text','Parent', TabHandles{finance_page,1},...
     'String', 'Expected Savings', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
@@ -1193,6 +1207,9 @@ ten_year_saving_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.65+
     'String', '10 Year Peiod', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 twen_year_saving_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.575+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+    'String', '20 Year Period', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+        
+payback_period_title = uicontrol('Units', 'normalized', 'Position',[0.5 0.5+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
     'String', 'Payback Peiod', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
         
 % Edit boxes for cost per kw
@@ -1206,6 +1223,9 @@ ten_year_saving_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.65+y_
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 twen_year_saving_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+    'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+payback_saving_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.5+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
@@ -1347,7 +1367,7 @@ uistack(background_picture, 'bottom');
         investment_cost = cost_solar_input*1000 + cost_battery_input*1000;
         payback_period = investment_cost/ (daily_savings*365);
         ROI = (((daily_savings*365*20) - investment_cost) / investment_cost) *100
-        Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period)
+        Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period,ROI)
     end
 
 
@@ -1369,17 +1389,18 @@ function Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tarif
       
       
 end
-function Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period)
+function Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period,ROI)
       set(ALCC_value,'string', num2str(electricity_cost_ALCC))
       set(ANNPMT_opt_value,'string', num2str(electricity_cost_ANNPMT(1,1)))
       set(ANNPMT_likely_value , 'String', num2str(electricity_cost_ANNPMT(1,2)))
       set(ANNPMT_pess_value , 'String', num2str(electricity_cost_ANNPMT(1,3))) 
+      set(ROI_value , 'String', num2str(0)) 
       
       set(monthly_saving_value,'string', num2str(daily_savings*30)) 
       set(yearly_saving_value,'string', num2str(daily_savings*365))   
       set(ten_year_saving_value,'string', num2str(daily_savings*3650))   
-      set(twen_year_saving_value,'string', num2str(payback_period))   
-    
+      set(twen_year_saving_value,'string', num2str(daily_savings*3650*2))   
+       set(payback_saving_value,'string', num2str(payback_period))    
 end
 end
 %%   Callback for Tab Selection (TAB JUMP)

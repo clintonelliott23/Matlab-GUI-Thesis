@@ -733,7 +733,7 @@ PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input..
     end   
 
 % Create a reset button
-for count = 1:1:NumTabs
+for count = 1:1:4
 reset_button = uicontrol('Units', 'normalized', 'Position',[0.95 0 0.05 0.05], 'Style', 'pushbutton',...
     'String', 'Reset', 'Visible', 'On','Callback', @reset,'Parent', TabHandles{count,1},...
     'Backgroundcolor','cyan', 'Foregroundcolor', 'black', 'FontSize', 15);
@@ -1221,7 +1221,7 @@ display_page = 5;
 
 % Create the static text for production
 disp_prod_title = uicontrol('Units', 'normalized', 'Position',[0.375 0.5+y_disp_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
-    'String', 'Daily Production', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 15);
+    'String', 'Daily Production', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 % Edit boxes for production
 disp_prod_value = uicontrol('Units', 'normalized', 'Position',[0.375 0.43+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
@@ -1229,7 +1229,7 @@ disp_prod_value = uicontrol('Units', 'normalized', 'Position',[0.375 0.43+y_prod
 
 % Create the static text for production
 disp_stored_title = uicontrol('Units', 'normalized', 'Position',[0.375 0.195+y_disp_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
-    'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 15);
+    'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 % Edit boxes for production
 disp_stored_value = uicontrol('Units', 'normalized', 'Position',[0.375 0.125+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
@@ -1237,7 +1237,7 @@ disp_stored_value = uicontrol('Units', 'normalized', 'Position',[0.375 0.125+y_p
 
 % Create the static text for production
 disp_used_title = uicontrol('Units', 'normalized', 'Position',[0.725 0.195+y_disp_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
-    'String', 'Daily Usage', 'Visible', 'On','Backgroundcolor', 'red', 'Foregroundcolor', 'black', 'FontSize', 15);
+    'String', 'Daily Usage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 % Edit boxes for production
 disp_used_value = uicontrol('Units', 'normalized', 'Position',[0.725 0.125+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
@@ -1245,19 +1245,19 @@ disp_used_value = uicontrol('Units', 'normalized', 'Position',[0.725 0.125+y_pro
 
 
 % Create the static text for production
-disp_exported_title = uicontrol('Units', 'normalized', 'Position',[0.725 0.5+y_disp_offset 0.07 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
-    'String', 'Export', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 15);
+disp_exported_title = uicontrol('Units', 'normalized', 'Position',[0.725 0.5+y_disp_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
+    'String', 'Export', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 % Edit boxes for production
-disp_exported_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.5+y_prod_offset 0.07 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
+disp_exported_value = uicontrol('Units', 'normalized', 'Position',[0.725 0.43+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 % Create the static text for production
-disp_imported_title = uicontrol('Units', 'normalized', 'Position',[0.725 0.43+y_disp_offset 0.07 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
-    'String', 'Import', 'Visible', 'On','Backgroundcolor', 'red', 'Foregroundcolor', 'black', 'FontSize', 15);
+disp_imported_title = uicontrol('Units', 'normalized', 'Position',[0.775 0.595+y_disp_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
+    'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 % Edit boxes for production
-disp_imported_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.43+y_prod_offset 0.07 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
+disp_imported_value = uicontrol('Units', 'normalized', 'Position',[0.775 0.525+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 
@@ -1364,9 +1364,7 @@ function Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tarif
       set(disp_used_value,'string', num2str(kwhr_avg_found))
       set(disp_prod_value,'string', num2str(kw_produced_daily))
       set(disp_stored_value , 'String', num2str(daily_storage))
-      set(disp_exported_value , 'String', num2str(daily_exported))
-       set(disp_imported_value , 'String', num2str(daily_imported))
-      
+      set(daily_exported_value , 'String', num2str(daily_exported))
       
 end
 function Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period)
