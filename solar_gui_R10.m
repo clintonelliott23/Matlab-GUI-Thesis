@@ -786,12 +786,19 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                                                     set(postal_value, 'String', '4814')                                          
                                                     set(tariff_value, 'String', '11')
                                                     set(supplier_value, 'String', 'Ergon')
-                    TabSellectCallback(0,0,2);   
+                      
                                                     set(enter_gui_button,'Visible','On')
                    
 PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input...
             ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)                     
   
+        TabSellectCallback(0,0,2); 
+        pause(0.75)
+        TabSellectCallback(0,0,3); 
+          pause(0.75)
+        TabSellectCallback(0,0,4); 
+          pause(0.75)
+        TabSellectCallback(0,0,5); 
     end
 
 
@@ -1289,7 +1296,7 @@ disp_imported_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.43+y_pr
         guidata(hTabFig,TabHandles);
 
 %%   Make Tab 1 active
-        TabSellectCallback(0,0,5);
+        TabSellectCallback(0,0,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Background Images (TAB JUMP)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
