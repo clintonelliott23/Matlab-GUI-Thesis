@@ -223,16 +223,89 @@ persistent pool_input;
                  set(pool_value, 'String', 'NO')
                  pool_input = 0   
                 end 
+
+                set(solar_size_value, 'String', '0') 
+                set(solar_cost_value, 'String', '0')
+                set(battery_size_value, 'String', '0') 
+                set(battery_cost_value, 'String', '0')
+
+                set(percentage_question,'Visible','ON')
+                set(percentage_popupmenu,'Visible','ON')                              
+    end
+%% Percentage Usage Question
+percentage_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+    'String', 'What percentage of your electricty do you use doing the day?','Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+
+persistent percentage_input
+percentage_input = 0;
+    function percentage_next(hObject, eventdata)
+               set(percentage_next_button,'Visible','On')                 
+                index = get(hObject, 'Value');         
+                percentage_input = percentage_list(index) 
+%                 set(percentage_used_value, 'String', num2str(percentage_list(index)))
+    end
+
+
+percentage_list = [20 25 30 35 40 45];
+
+%Set up pop up menu with pulldown data
+percentage_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
+    'String', percentage_list,'Callback', @percentage_next, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+
+% Create button if has exisiting solar
+percentage_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'On','Callback', @percentage_next_click, 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+
+    function percentage_next_click(hObject, eventdata)
+                set(percentage_question,'Visible','Off')
+                set(percentage_popupmenu,'Visible','Off')  
+                set(percentage_next_button,'Visible','Off')              
                 
                 set(text_solar_question,'Visible','ON') 
                 set(button_yes_solar,'Visible','ON') 
                 set(button_no_solar,'Visible','ON')
-                
-                set(solar_size_value, 'String', '0') 
-                set(solar_cost_value, 'String', '0')
-                set(battery_size_value, 'String', '0') 
-                set(battery_cost_value, 'String', '0') 
     end
+   
+%% Performance Ratio Intake
+performance_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
+    'String', 'What is your performance ratio of the solar system?','Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+
+persistent performance_input
+performance_input = 0;
+    function performance_next(hObject, eventdata)
+               set(percentage_next_button,'Visible','On')                 
+                index = get(hObject, 'Value');         
+                performance_input = percentage_list(index) 
+%                 set(percentage_used_value, 'String', num2str(percentage_list(index)))
+    end
+
+
+performance_list = [20 25 30 35 40 45];
+
+%Set up pop up menu with pulldown data
+percentage_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
+    'String', percentage_list,'Callback', @percentage_next, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+
+% Create button if has exisiting solar
+percentage_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'On','Callback', @percentage_next_click, 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
+
+    function percentage_next_click(hObject, eventdata)
+                set(percentage_question,'Visible','Off')
+                set(percentage_popupmenu,'Visible','Off')  
+                set(percentage_next_button,'Visible','Off')              
+                
+                set(text_solar_question,'Visible','ON') 
+                set(button_yes_solar,'Visible','ON') 
+                set(button_no_solar,'Visible','ON')
+    end
+
+
+
 
 %% Solar Question
 text_solar_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
@@ -612,8 +685,8 @@ text_state_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 
     'String', 'What is your post code?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
-text_state_codes = uicontrol('Units', 'normalized', 'Position',[0.22 0.35 0.05 0.3], 'Style', 'text',...
-    'String', '4814 4825 0800 6000 3000 7000 2000 4000', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
+text_state_codes = uicontrol('Units', 'normalized', 'Position',[0.2 0.35 0.1 0.3], 'Style', 'text',...
+    'String', '4814 TSV 4825 ISA 0800 DAR 6000 PER 3000 MEL 7000 HOB 2000 SYD 4000 BRI', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 15);
 
 %Set up pop up menu with pulldown data for states
@@ -641,12 +714,11 @@ persistent state_input
                          set(supplier_value, 'String', 'Ergon')
                     
                          if state_input == 4814||4825||0800                            
-                                 errordlg('Error - We do not have benchmark data for mains gas for this postcode,...
-                                 data without mains gas connected is shown instead.','Data Error')
+                                 errordlg('Error - We do not have benchmark data for mains gas for this postcode,... data without mains gas connected is shown instead.','Data Error')
                                  return
                          end  
                          
-                          if state_input == 4814||4825||0800                            
+                          if state_input == 6000                            
                                  errordlg('Error -  Your estimate will be based on WA consumption data from 2011, which is the most recent available to the AER. It assumes you have no pool and use an average amount of gas.','Data Error')
                                  return
                         end  
@@ -789,6 +861,7 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
 
                     gas_mains_input = 0;                           set(gas_main_value, 'String', 'Yes')
                     pool_input = 0;                                set(pool_value, 'String', 'Yes')
+                    percentage_input = 30;
                     solar_installed = 1;                    
                     solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
                     cost_solar_input =9;            set(solar_cost_value, 'String', num2str(cost_solar_input))
@@ -1010,7 +1083,7 @@ persistent daily_savings
         disp('Average Kilowatts Hours For Household');   disp(kwhr_avg_found);   
         
        kw_produced_daily = solar_size_input *  PSH_avg * perf_ratio_input
-       kwhr_used_from_solar = (1/3)*kw_produced_daily
+       kwhr_used_from_solar = (10/percentage_input)*kw_produced_daily
        
       % Need to find the calculations
         daily_storage = battery_size_input;  
