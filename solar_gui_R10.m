@@ -600,7 +600,7 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
    
                  set(text_state_question,'Visible','On'); 
                  set(postcode_edit,'Visible','On');
-                 
+                 set(text_state_codes,'Visible','On');
     end
 
 
@@ -612,9 +612,14 @@ text_state_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 
     'String', 'What is your post code?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
+text_state_codes = uicontrol('Units', 'normalized', 'Position',[0.22 0.35 0.05 0.3], 'Style', 'text',...
+    'String', '4814 4825 0800 6000 3000 7000 2000 4000', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
+    'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 15);
+
 %Set up pop up menu with pulldown data for states
-state_codes = [4814 4825 4820];
-state_names = ["QLD", "NSW", "VIC"];
+state_codes = [4814 4825 0800 6000 3000 7000 2000 4000];
+state_names = ["Townsville, QLD", "Mount Isa, QLD", "Darwin, NT","Perth, WA", "Melbourne, VIC",...
+    "Horbart, TAS", "Sydney, NSW", "Brisbane, QLD"];
 
 postcode_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1], 'Style', 'edit','Parent', TabHandles{prompt_page,1},...
    'Callback', @state_check_next, 'tag', 'state_entry', 'Visible', 'Off', 'FontSize', 20);
@@ -634,7 +639,18 @@ persistent state_input
                          set(postal_value, 'String', num2str(state_input)) 
                          set(tariff_value, 'String', '11')
                          set(supplier_value, 'String', 'Ergon')
-               
+                    
+                         if state_input == 4814||4825||0800                            
+                                 errordlg('Error - We do not have benchmark data for mains gas for this postcode,... data without mains gas connected is shown instead.','Data Error')
+                                 return
+                         end  
+                         
+                          if state_input == 6000                            
+                                 errordlg('Error -  Your estimate will be based on WA consumption data from 2011, which is the most recent available to the AER. It assumes you have no pool and use an average amount of gas.','Data Error')
+                                 return
+                        end  
+                            
+                        
                        end   
         end        
     end
@@ -656,7 +672,8 @@ state_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.
                 set(state_next_button,'Visible','Off') 
                 set(text_state_question,'Visible','Off')  
                 set(postcode_edit,'Visible','Off')      
-
+                 set(text_state_codes,'Visible','Off');
+                
                 set(text_bill_question,'Visible','On')         
                 set(bill_edit,'Visible','On') 
     end
@@ -782,7 +799,8 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                     bill = 550;                     set(bill_value, 'String', num2str(bill) )
                     number_people_input = 4;        set(occupants_value, 'String', num2str(number_people_input))
                     perf_ratio_input = 0.85;
-                    state_input =  4825;            set(state_value, 'String', 'QLD') ; 
+                    state_input =  4814;            
+                    set(state_value, 'String', 'QLD') ; 
                                                     set(postal_value, 'String', '4814')                                          
                                                     set(tariff_value, 'String', '11')
                                                     set(supplier_value, 'String', 'Ergon')
@@ -997,6 +1015,8 @@ persistent daily_savings
         daily_storage = battery_size_input;  
       if ((battery_installed == 1) & (solar_installed == 0))
           daily_exported = 0;
+      elseif ((battery_installed == 0) & (solar_installed == 0))
+            kw_produced_daily = 0;            
       else         
         daily_exported = (kw_produced_daily - kwhr_used_from_solar - daily_storage);
       end
@@ -1014,19 +1034,37 @@ persistent daily_savings
 
 % Function for findin the liner change between nasa data
     function [PSH_avg] =  tilt_calculator (roof_tilt_input,month)
-        
+        psh_row_index = 0;
+                switch state_input
+                        case 4814                        
+                        case 4825
+                            psh_row_index =  6;
+                        case 0800
+                             psh_row_index =  12;
+                        case 6000
+                            psh_row_index =  18;
+                        case 3000
+                             psh_row_index =  24;
+                        case 7000
+                            psh_row_index =  30;
+                        case 2000
+                             psh_row_index =  36;
+                       case 4000
+                             psh_row_index =  42; 
+                    end   
+ 
                 if  ((roof_tilt_input >= 0) & (roof_tilt_input <= 4))
                     max_tilt = 4;                      min_tilt = 0;
-                    max_psh = solar_psh_data(2,month);     min_psh = solar_psh_data(1,month);
+                    max_psh = solar_psh_data(2+psh_row_index,month);     min_psh = solar_psh_data(1+psh_row_index,month);
                elseif ((roof_tilt_input > 4) & (roof_tilt_input <= 19))
                     max_tilt = 19;                      min_tilt = 4;
-                    max_psh = solar_psh_data(3,month);     min_psh = solar_psh_data(2,month);
+                    max_psh = solar_psh_data(3+psh_row_index,month);     min_psh = solar_psh_data(2+psh_row_index,month);
                elseif ((roof_tilt_input > 19) & (roof_tilt_input <= 34))
                     max_tilt = 34;                      min_tilt = 19;
-                    max_psh = solar_psh_data(4,month);     min_psh = solar_psh_data(3,month);
+                    max_psh = solar_psh_data(4+psh_row_index,month);     min_psh = solar_psh_data(3+psh_row_index,month);
                elseif ((roof_tilt_input> 34) & (roof_tilt_input <= 90))
                     max_tilt = 90;                      min_tilt = 34;
-                    max_psh = solar_psh_data(5,month);     min_psh = solar_psh_data(4,month);
+                    max_psh = solar_psh_data(5+psh_row_index,month);     min_psh = solar_psh_data(4+psh_row_index,month);
                 end
                 
                 div_step = (max_psh - min_psh)/(max_tilt-min_tilt);
@@ -1051,7 +1089,7 @@ persistent daily_savings
         
         for i = 1:1:13
                         kw_produced_daily = solar_size_input *  tilt_calculator (roof_tilt_input,i) * perf_ratio_input;
-                        bar_data_plot(1,i) =  kw_produced_daily
+                        bar_data_plot(1,i) =  kw_produced_daily;
                         hold all
         end
         
@@ -1091,10 +1129,20 @@ persistent daily_savings
                         case 4814                        
                         case 4825
                             row = row + 16;
-                        case 4827
-                             row = row + 16;
+                        case 0800
+                             row = row + 32;
+                        case 6000
+                            row = row + 48;
+                        case 3000
+                             row = row + 64;
+                        case 7000
+                            row = row + 80;
+                        case 2000
+                             row = row + 96;
+                       case 4000
+                             row = row + 112; 
                     end                            
-                                 
+        
                     switch number_people_input
                         case 3
                             row = row +4;
