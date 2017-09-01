@@ -255,18 +255,18 @@ ESS = 60;                   % Home Energy Storage System SOC, %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%% 
 %   
-% %% Define content for the bottom panel of display % Display the time in the bottom left corner of the GUI 
-% uicontrol('Style','text','Position',[10 15 round(PanelWidth/2) 18],... 
-%     'string',sprintf('%d:%d',hr,mins),'BackgroundColor',white,... 
-%     'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
-%     'FontSize',14); 
+%% Define content for the bottom panel of display % Display the time in the bottom left corner of the GUI 
+uicontrol('Style','text','Position',[10 15 round(PanelWidth/2) 18],... 
+    'string',sprintf('%d:%d',hr,mins),'BackgroundColor',white,... 
+    'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
+    'FontSize',14); 
 %   
-% % Display the SOC gauge in the bottom right corner of the GUI 
-% axes('Units','pixels','Position',[980 18 100 15]); 
-% area1 = area([(1-SOC/100) 1],[1 1]); 
-% set(gca,'xtick',[]); set(gca,'ytick',[]); 
-% set(gca,'xlim',[0 1]);  
-% set(gca,'ylim',[0 1]); 
+% Display the SOC gauge in the bottom right corner of the GUI 
+axes('Units','pixels','Position',[980 18 100 15]); 
+area1 = area([(1-SOC/100) 1],[1 1]); 
+set(gca,'xtick',[]); set(gca,'ytick',[]); 
+set(gca,'xlim',[0 1]);  
+set(gca,'ylim',[0 1]); 
 % if SOC <= 25         
 %     set(area1,'FaceColor','red');       % display as red if SOC is low 
 % elseif SOC <= 40     

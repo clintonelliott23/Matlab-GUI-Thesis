@@ -125,7 +125,9 @@ grey = 0.9*white;
                 {@TabSellectCallback, CountTabs});
         end
 
- 
+       % Set up the time
+       clock_disp()
+       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Define Tab 1 content  (TAB JUMP)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
@@ -133,6 +135,9 @@ prompt_page = 1;
 persistent index;
 
 
+% Define Max number of inputs for progress bar
+persistent number_of_inputs
+number_of_inputs = 13;
 %% Create an Entry Button
 
 % Create a button to enter calculator
@@ -148,7 +153,7 @@ enter_gui_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.3 0.3 0.3
                 set(button_no_gas_mains,'Visible','ON')  
    
                set(prefill_button,'Visible','On') 
-
+               progress_bar(1)
     end
 
 
@@ -189,7 +194,8 @@ persistent gas_mains_input
                 
                 set(pool_question,'Visible','ON') 
                 set(button_yes_pool,'Visible','ON') 
-                set(button_no_pool,'Visible','ON')  
+                set(button_no_pool,'Visible','ON') 
+                progress_bar(2)
     end
 
 %% Pool Question
@@ -230,7 +236,8 @@ persistent pool_input;
                 set(battery_cost_value, 'String', '0')
 
                 set(percentage_question,'Visible','ON')
-                set(percentage_popupmenu,'Visible','ON')                              
+                set(percentage_popupmenu,'Visible','ON')
+                progress_bar(3)
     end
 %% Percentage Usage Question
 percentage_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
@@ -244,6 +251,7 @@ percentage_input = 0;
                 index = get(hObject, 'Value');         
                 percentage_input = percentage_list(index) 
 %                 set(percentage_used_value, 'String', num2str(percentage_list(index)))
+
     end
 
 
@@ -263,9 +271,9 @@ percentage_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0
                 set(percentage_popupmenu,'Visible','Off')  
                 set(percentage_next_button,'Visible','Off')              
                 
-                set(text_solar_question,'Visible','ON') 
-                set(button_yes_solar,'Visible','ON') 
-                set(button_no_solar,'Visible','ON')
+                set(performance_question,'Visible','On')
+                set(performance_popupmenu,'Visible','On')  
+                    progress_bar(4) 
     end
    
 %% Performance Ratio Intake
@@ -276,32 +284,34 @@ performance_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3
 persistent performance_input
 performance_input = 0;
     function performance_next(hObject, eventdata)
-               set(percentage_next_button,'Visible','On')                 
+               set(performance_next_button,'Visible','On')                 
                 index = get(hObject, 'Value');         
-                performance_input = percentage_list(index) 
+                performance_input = performance_list(index) 
 %                 set(percentage_used_value, 'String', num2str(percentage_list(index)))
+
     end
 
 
-performance_list = [20 25 30 35 40 45];
+performance_list = [0.70 0.75 0.80 0.85 0.90];
 
 %Set up pop up menu with pulldown data
-percentage_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
-    'String', percentage_list,'Callback', @percentage_next, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
+performance_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
+    'String', performance_list,'Callback', @performance_next, 'tag', 'KW_menu', 'Visible', 'OFF', 'FontSize', 20);
 
 % Create button if has exisiting solar
-percentage_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
-    'String', 'Next', 'Visible', 'On','Callback', @percentage_next_click, 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+performance_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1], 'Style', 'pushbutton',...
+    'String', 'Next', 'Visible', 'On','Callback', @performance_next_click, 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
-    function percentage_next_click(hObject, eventdata)
-                set(percentage_question,'Visible','Off')
-                set(percentage_popupmenu,'Visible','Off')  
-                set(percentage_next_button,'Visible','Off')              
+    function performance_next_click(hObject, eventdata)
+                set(performance_question,'Visible','Off')
+                set(performance_popupmenu,'Visible','Off')  
+                set(performance_next_button,'Visible','Off')              
                 
                 set(text_solar_question,'Visible','ON') 
                 set(button_yes_solar,'Visible','ON') 
                 set(button_no_solar,'Visible','ON')
+                progress_bar(5)
     end
 
 
@@ -326,15 +336,14 @@ button_no_solar = uicontrol('Units', 'normalized', 'Position',[0.6 0.3 0.3 0.3],
 
 %% Solar "YES" what is the size
 persistent solar_installed
-persistent perf_ratio_input
     function solar_click_yes(hObject, eventdata)
                 set(text_solar_question,'Visible','OFF') 
                 set(button_yes_solar,'Visible','OFF') 
                 set(button_no_solar,'Visible','OFF')
                 solar_installed = 1
-                perf_ratio_input = 0.85;
                 set(solar_size_question,'Visible','ON') 
-                set(KW_popupmenu,'Visible','ON')      
+                set(KW_popupmenu,'Visible','ON')
+              
     end
 
 solar_size_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
@@ -349,6 +358,7 @@ solar_size_input = 0;
                 index = get(hObject, 'Value');         
                 solar_size_input = KW_solar_size(index) 
                 set(solar_size_value, 'String', num2str(KW_solar_size(index)))
+                progress_bar(5.25)      
     end
 
 
@@ -386,6 +396,8 @@ cost_solar_input = 0;
                 index = get(hObject, 'Value');         
                 cost_solar_input = solar_cost(index) 
                 set(solar_cost_value, 'String', num2str(solar_cost(index)))
+                progress_bar(5.75)                
+                
     end
 
 solar_cost = [4 5 6 7 8 9 10 11 13 14 16];
@@ -414,7 +426,8 @@ cost_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1
                 
                 set(text_battery_question,'Visible','ON') 
                 set(button_yes_battery,'Visible','ON') 
-                set(button_no_battery,'Visible','ON')    
+                set(button_no_battery,'Visible','ON')
+                progress_bar(6)
     end   
 
 text_battery_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
@@ -476,7 +489,8 @@ battery_size_input = 0;
                 set(battery_size_next_button,'Visible','OFF')
        
                 set(cost_battery_question,'Visible','ON') 
-                set(battery_cost_popupmenu,'Visible','ON')      
+                set(battery_cost_popupmenu,'Visible','ON')
+                  progress_bar(6.25)
     end
 
 cost_battery_question = uicontrol('Units', 'normalized', 'Position',[0.35 0.7 0.3 0.15], 'Style', 'text',...
@@ -496,6 +510,7 @@ cost_battery_input = 0;
                  index = get(hObject, 'Value')        
                  cost_battery_input = battery_cost_list(index) 
                  set(battery_cost_value, 'String', num2str(battery_cost_list(index)))               
+                        progress_bar(6.75)
     end
 
 % Create button if has exisiting solar
@@ -516,6 +531,7 @@ battery_cost_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4
                   
                 set(text_roof_question,'Visible','ON') 
                 set(tilt_popupmenu,'Visible','ON')                       
+                     progress_bar(7)  
     end
 
 
@@ -563,7 +579,7 @@ roof_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1
                 set(radio_east_button,'Visible','On');                 set(radio_north_east_button,'Visible','On')  
                 set(radio_south_button,'Visible','On');                set(radio_south_east_button,'Visible','On')  
                 set(radio_west_button,'Visible','On');                 set(radio_south_west_button,'Visible','On')               
-               
+                     progress_bar(8)              
     end
 
 %% Roof Orientation
@@ -674,6 +690,7 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
                  set(text_state_question,'Visible','On'); 
                  set(postcode_edit,'Visible','On');
                  set(text_state_codes,'Visible','On');
+                        progress_bar(9)
     end
 
 
@@ -712,7 +729,7 @@ persistent state_input
                          set(postal_value, 'String', num2str(state_input)) 
                          set(tariff_value, 'String', '11')
                          set(supplier_value, 'String', 'Ergon')
-                    
+                                        progress_bar(10)
                          if state_input == 4814||4825||0800                            
                                  errordlg('Error - We do not have benchmark data for mains gas for this postcode,... data without mains gas connected is shown instead.','Data Error')
                                  return
@@ -749,6 +766,7 @@ state_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.
                 
                 set(text_bill_question,'Visible','On')         
                 set(bill_edit,'Visible','On') 
+                        progress_bar(11)
     end
 
 %% Create Bill question
@@ -781,7 +799,7 @@ bill_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0.1
                 
                 set(number_people_question,'Visible','On')  
                 set(people_popupmenu,'Visible','On')   
-                
+                         progress_bar(12)           
     end
 %% Create number of people questions
 % Create function people
@@ -815,11 +833,12 @@ people_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.4 0.3 0
                 set(number_people_question,'Visible','Off')  
                 set(people_popupmenu,'Visible','Off') 
                 set(people_next_button,'Visible','Off') 
-PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input...
+PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
             ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)                       
                 
                 TabSellectCallback(0,0,2);
-                 set(enter_gui_button,'Visible','On') 
+                 set(enter_gui_button,'Visible','On')
+                                     progress_bar(13)
     end   
 
 % Create a reset button
@@ -847,13 +866,14 @@ end
     end
     
 % Create a Prefill button
-prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1], 'Style', 'pushbutton',...
-    'String', 'Fill', 'Visible', 'On','Callback', @prefill,'Parent', TabHandles{prompt_page,1},...
+prefill_button = uicontrol('Units', 'normalized', 'Position',[0.95 0.05 0.05 0.05], 'Style', 'pushbutton',...
+    'String', 'E.G', 'Visible', 'On','Callback', @prefill,'Parent', TabHandles{prompt_page,1},...
     'Backgroundcolor','red', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 
 % Pre fills all the data instead of going through the process
     function prefill(hObject, eventdata)
+                            progress_bar(13)
                 set(gas_mains_question,'Visible','Off') 
                 set(button_yes_gas_mains,'Visible','Off') 
                 set(button_no_gas_mains,'Visible','Off')  ;   set(enter_gui_button,'Visible','OFF') 
@@ -862,6 +882,7 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                     gas_mains_input = 0;                           set(gas_main_value, 'String', 'Yes')
                     pool_input = 0;                                set(pool_value, 'String', 'Yes')
                     percentage_input = 30;
+                    performance_input = 0.85;
                     solar_installed = 1;                    
                     solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
                     cost_solar_input =9;            set(solar_cost_value, 'String', num2str(cost_solar_input))
@@ -872,7 +893,6 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                     orientation_input = 1;          set(orientation_value, 'String', 'North')
                     bill = 550;                     set(bill_value, 'String', num2str(bill) )
                     number_people_input = 4;        set(occupants_value, 'String', num2str(number_people_input))
-                    perf_ratio_input = 0.85;
                     state_input =  4814;            
                     set(state_value, 'String', 'QLD') ; 
                                                     set(postal_value, 'String', '4814')                                          
@@ -881,9 +901,18 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.45 0.025 0.1 0.1
                       
                                                     set(enter_gui_button,'Visible','On')
                    
-PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input...
+PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
             ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)                     
   
+         loading_bar = waitbar(0,'Please wait...');
+        steps = 1000;
+        for step = 1:steps
+            % computations take place here
+            waitbar(step / steps)
+        end
+        close(loading_bar) 
+        
+        
         TabSellectCallback(0,0,2); 
         pause(0.75)
         TabSellectCallback(0,0,3); 
@@ -1073,7 +1102,7 @@ daily_savings_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.57
 % Calculation of PSH from tilt angle
 persistent kw_produced_daily
 persistent daily_savings
-    function PSH_and_KW_Calc(solar_size_input,perf_ratio_input, roof_tilt_input,state_input...
+    function PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
             ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)    
                  
         PSH_avg =  tilt_calculator (roof_tilt_input,13);
@@ -1082,7 +1111,7 @@ persistent daily_savings
         kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
         disp('Average Kilowatts Hours For Household');   disp(kwhr_avg_found);   
         
-       kw_produced_daily = solar_size_input *  PSH_avg * perf_ratio_input
+       kw_produced_daily = solar_size_input *  PSH_avg * performance_input
        kwhr_used_from_solar = (10/percentage_input)*kw_produced_daily
        
       % Need to find the calculations
@@ -1162,8 +1191,8 @@ persistent daily_savings
             month_name = ({'Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';'Average'});         
         
         for i = 1:1:13
-                        kw_produced_daily = solar_size_input *  tilt_calculator (roof_tilt_input,i) * perf_ratio_input;
-                        bar_data_plot(1,i) =  kw_produced_daily;
+                        kw_produced_daily_plot = solar_size_input *  tilt_calculator (roof_tilt_input,i) * performance_input;
+                        bar_data_plot(1,i) =  kw_produced_daily_plot;
                         hold all
         end
         
@@ -1285,27 +1314,33 @@ ANNPMT_pess_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_pro
 
 ROI_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
-
+persistent bar_data_finance
+persistent yearly_savings_adj_infla
     function finance_graph()
         % Create axis for graph
             %   Plot a sine function
                 PlotOffset = 40;
-                haxes2 = axes('Parent', TabHandles{finance_page,1}, ...
+                haxes3 = axes('Parent', TabHandles{finance_page,1}, ...
                     'Units', 'normalized', ...
                     'Position', [0.075 0.1 0.9 0.35]);
-                plot(haxes2, 1:12, sin((1:12)./12));
+                 
+                yearly_cost_plot =  kwhr_avg_found*tariff_rate_normal_found*365;
+                yearly_cost_witsol_plot = yearly_cost_plot - daily_savings*365;
 
-%           for i = 1:1:20
-%                          kw_produced_daily = solar_size_input *  tilt_calculator (roof_tilt_input,i) * perf_ratio_input;
-%                          bar(haxes2,month_name(1,i), kw_produced_daily,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
-%                          hold all
-%          end               
-                
+        for i = 1:1:20                     
+                       bar_data_finance(1,i) = yearly_cost_plot;
+                       bar_data_finance(2,i) = yearly_cost_witsol_plot;
+                       yearly_cost_plot = yearly_cost_plot *(1+inflation_rate);
+                       yearly_cost_witsol_plot = yearly_cost_witsol_plot * (1+inflation_rate);
+        end              
+              buddy = bar(haxes3,bar_data_finance','stacked','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+               buddy(2).FaceColor = [.9 .1 .1];
+
                 % Label, Dimension and Legent the GRPAH
-        title('Raw Siganal with Associated Noise','Color','yellow');
-        xlabel('Months)');                      ylabel('Production (kWhr)');          
-        % xlim([4000, 6000]);                  %ylim([4000, 6000]);
-        % legend({'RAW Signal'});
+        title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','yellow');
+        xlabel('Years','FontSize', 16);                      ylabel('Cost $AUD','FontSize', 16);          
+         xlim([0, 21]);                  %ylim([4000, 6000]);
+         legend({'Solar/Batery','Normal'},'Location','northwest');
         set(gca, ...
           'Box'         , 'off'     , ...
           'TickDir'     , 'out'     , ...
@@ -1470,34 +1505,54 @@ uistack(background_picture, 'bottom');
 
 %
 %% Cost Analysis (TAB JUMP)
+persistent inflation_rate
+persistent investment_cost
+function cost_analysis(daily_savings)
+            inflation_rate = 0.03;        mortgage_rates = [0.01 0.035 0.06];
+            discount_rate = 0.04;        
+            n_years = 20; % or maybe 25
+            x_unitless = (1 + inflation_rate)/(1 + discount_rate);
+            pa = (1 - x_unitless^(n_years))/(1 - x_unitless);
+            pa1 = x_unitless*pa  ;
 
-    function cost_analysis(daily_savings)
-        inflation_rate = 0.03;        mortgage_rates = [0.01 0.035 0.06];
-        discount_rate = 0.04;        
-        n_years = 20; % or maybe 25
-        x_unitless = (1 + inflation_rate)/(1 + discount_rate);
-        pa = (1 - x_unitless^(n_years))/(1 - x_unitless);
-        pa1 = x_unitless*pa  ;
-        
-        
-        maintenance_cost = 0.015*cost_solar_input*1000;
-        salvage_cost = solar_size_input*0.21*1000;
 
-        LCC = cost_solar_input*1000 + maintenance_cost - salvage_cost;
-        ALCC = LCC/pa;
-       
-            for i = 1:1:3 
-                 mort = mortgage_rates(1,i);
-                ANNPMT(1,i) = LCC *mort*(   ((1+mort)^n_years)  /  (((1+mort)^n_years)-1)  ) ;       
-                electricity_cost_ANNPMT(1,i) = ANNPMT(1,i)/(kw_produced_daily*365);
-            end      
-        electricity_cost_ALCC = ALCC/(kw_produced_daily*365);
-        
-        investment_cost = cost_solar_input*1000 + cost_battery_input*1000;
-        payback_period = investment_cost/ (daily_savings*365);
-        ROI = (((daily_savings*365*20) - investment_cost) / investment_cost) *100
-        Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period,ROI)
-    end
+            maintenance_cost = 0.015*cost_solar_input*1000;
+%             salvage_cost = solar_size_input*0.21*1000;
+
+            LCC = cost_solar_input*1000 + maintenance_cost
+            ALCC = LCC/pa;
+
+                for i = 1:1:3 
+                     mort = mortgage_rates(1,i);
+                    ANNPMT(1,i) = LCC *mort*(   ((1+mort)^n_years)  /  (((1+mort)^n_years)-1)  ) ;       
+                    electricity_cost_ANNPMT(1,i) = ANNPMT(1,i)/(kw_produced_daily*365);
+                end      
+            electricity_cost_ALCC = ALCC/(kw_produced_daily*365);
+
+            investment_cost = cost_solar_input*1000 + cost_battery_input*1000
+            payback_period = investment_cost/ (daily_savings*365);
+            ROI = (((daily_savings*365*20) - investment_cost) / investment_cost) *100/20
+            Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period,ROI)
+
+
+                % investment_cost
+            yearly_savings_adj_infla = daily_savings*365;           
+            for i = 1:1:20                     
+                cash_flow_in(1,i) = yearly_savings_adj_infla ;
+                yearly_savings_adj_infla = yearly_savings_adj_infla  * (1+inflation_rate);             
+                cash_flows_discounted(1,i) =  cash_flow_in(1,i) / ((1 + discount_rate)); 
+%                 CashFlow(1,i+1) = cash_flows_discounted(1,i);
+            end
+             NPV = sum(cash_flows_discounted)-investment_cost
+           
+              ROI2 = ((NPV - investment_cost )*100) / investment_cost
+              
+              
+%               CashFlow(1,1) = -investment_cost
+%                 A = CashFlow
+%             [xval,fval] = fzero(@(x)real(A*(1+x).^-(0:length(A)-1).'), -3)
+            
+end
 
 
 function Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tariff_rate_normal_found,daily_exported,daily_imported,daily_savings)
@@ -1523,7 +1578,7 @@ function Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_
       set(ANNPMT_opt_value,'string', num2str(electricity_cost_ANNPMT(1,1)))
       set(ANNPMT_likely_value , 'String', num2str(electricity_cost_ANNPMT(1,2)))
       set(ANNPMT_pess_value , 'String', num2str(electricity_cost_ANNPMT(1,3))) 
-      set(ROI_value , 'String', num2str(0)) 
+      set(ROI_value , 'String', num2str(ROI)) 
       
       set(monthly_saving_value,'string', num2str(daily_savings*30)) 
       set(yearly_saving_value,'string', num2str(daily_savings*365))   
@@ -1531,6 +1586,32 @@ function Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_
       set(twen_year_saving_value,'string', num2str(daily_savings*3650*2))   
        set(payback_saving_value,'string', num2str(payback_period))    
 end
+    function clock_disp()
+        time_all = fix(clock)
+        hr = time_all(1,4)
+        min = time_all(1,5)    
+        check = uicontrol('Style','text','Units', 'normalized','Position',[0.0 0.0 0.04 0.03],... 
+            'string',sprintf('%d:%d',hr,min),'BackgroundColor', white,... 
+            'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
+            'FontSize',14); 
+    end
+
+function progress_bar(progress_step)
+    disp(round(progress_step*100/number_of_inputs,1))
+        %  Display the SOC gauge in the bottom right corner of the GUI 
+        axes('Units','normalized','Position',[0.80 0.0 0.1 0.05],'Parent', TabHandles{1,1}); 
+        area1 = area([0 progress_step/number_of_inputs],[1 1]); 
+        set(gca,'xtick',[]); set(gca,'ytick',[]); 
+        set(gca,'xlim',[0 1]);  
+        set(gca,'ylim',[0 1]); 
+        set(area1,'FaceColor','yellow');   
+        uicontrol('Style', 'text','Units', 'normalized','Position', [0.8 0.05 0.1 0.05],'Parent', TabHandles{1,1},... 
+            'string',sprintf('Progress: %d%%',round(number_of_inputs*100/number_of_inputs)),'BackgroundColor','white',... 
+            'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
+            'FontSize', 12);         
+end
+
+
 end
 %%   Callback for Tab Selection (TAB JUMP)
 function TabSellectCallback(~,~,SelectedTab)
