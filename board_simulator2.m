@@ -292,8 +292,8 @@ axes('Parent',TabHandles{1,1},'Units','pixels',...
     'Position',[935 483 152 85]); area([0 1],[1 1], 'FaceColor', grey); 
 axis off; axes('Parent',TabHandles{1,1},'Units','pixels','Position',[945 496 40 40]); 
 imsc=4; 
-% suni=imread('sunny.jpg');           % Assume sunny weather 
-% sunj=imresize(suni,imsc); image(sunj); 
+%  suni=imread('sunny.jpg');           % Assume sunny weather 
+%  sunj=imresize(suni,imsc); image(sunj); 
 axis off; uicontrol('Style','text','Parent', TabHandles{1,1},... 
     'Position', [943 540 120 20],'string', Location,... 
     'BackgroundColor',grey,'HorizontalAlignment','left',... 
@@ -309,17 +309,17 @@ tempb = uicontrol('Style', 'pushbutton','Parent', TabHandles{1,1},...
 tempf = 0;              % temp flag (0 means celcius, 1 mean fahrenheit) 
 set(tempb,'Callback',{@temp_callback}); 
     % function for converting between degrees celcius and fahrenheit     
-%     function temp_callback(hObject,eventdata,handles)         
-%         if tempf == 0             
-%             tempf = 1;             
-%             set(tempb,'string',fahr);             
-%             set(tempt,'string',num2str(Tempf));         
-%         elseif tempf == 1             
-%             tempf = 0;             
-%             set(tempb,'string',celc);             
-%             set(tempt,'string',num2str(Tempc));         
-%         end
-%     end
+    function temp_callback(hObject,eventdata,handles)         
+        if tempf == 0             
+            tempf = 1;             
+            set(tempb,'string',fahr);             
+            set(tempt,'string',num2str(Tempf));         
+        elseif tempf == 1             
+            tempf = 0;             
+            set(tempb,'string',celc);             
+            set(tempt,'string',num2str(Tempc));         
+        end
+    end
   
 % Information box for remaining range display 
 axes('Parent',TabHandles{1,1},'Units','pixels','Position',[5 483 925 85]); 
@@ -336,7 +336,7 @@ axis off;
 %     sprintf('Distance travelled since last charge: %d km',Rdone),...     
 %     'BackgroundColor', grey,'HorizontalAlignment', 'center',... 
 %     'FontName', 'arial','FontWeight', 'bold','FontSize', 16); 
-  
+%   
 % Driving Information Table: 
 % uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
 %     'Position', [8 452 355 25],'string', 'DRIVING',... 
@@ -345,16 +345,33 @@ axis off;
 % ustat = uitable('Position',[8 255 355 195],'Parent', TabHandles{1,1},... 
 %     'Data',u_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
 %     'ColumnWidth',{151 81 121}); 
-  
+%   
 % Charging Information Table: 
-% uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
-%     'Position', [368 452 355 25],'string', 'CHARGING',... 
-%     'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
-%     'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
-% cstat = uitable('Position',[368 255 355 195],'Parent', TabHandles{1,1},...   
-% 'Data',charge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
-%     'ColumnWidth',{151 81 121}); 
-  
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position', [368 452 355 25],'string', 'CHARGING',... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+dog = 50
+discharge_info = {'Percent Complete' 0 ' %'; 'Remaining Time' 0 ' hours'; 
+    'Power Out' 0 ' kW'; 'Power Received' 0 ' kW'; 
+    'Efficiency' dog*100 ' %'; 'Current Price' 7 ' $ / kWh'; 
+    'Average Price' 0 ' $ / kWh'; 'Total Income' 0 ' $'}; 
+
+
+% Set up pop up menu with pulldown data for states
+state_codes = [4814 4825 0800 6000 3000 7000 2000 4000];
+state_names = {'Townsville, QLD'; 'Mount Isa, QLD'; 'Darwin, NT'; 'Perth, WA'; 'Melbourne, VIC';...
+    'Horbart, TAS'; 'Sydney, NSW'; 'Brisbane, QLD'};
+
+% stae(:,2) =  state_names(:,1)
+stae(:,1) = num2str(state_codes(:,1))
+cstat = uitable('Position',[368 255 355 195],'Parent', TabHandles{1,1},...
+    'data',discharge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
+    'ColumnWidth',{151 81 121}); 
+%   
+% colnames = {'Voltage','Time'};
+% set(handles.cstat,'data',state_codes,'ColumnName',state_names)
+
 % % Discharging Information Table: 
 % uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
 %     'Position', [728 452 355 25],'string', 'DISCHARGING',... 
@@ -1202,40 +1219,40 @@ axes(consumption_ax);
 %             set(txt5, 'Visible', 'off');         
 %     end
 %     end
-%   
+% %   
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%% 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%% 
 %   
 %   
-% %% Save the TabHandles in guidata 
-% guidata(hTabFig,TabHandles); 
-%   
-% %% Make Tab 1 the active tab upon initialisation 
-% TabSelectCallback(0,0,1); 
+%% Save the TabHandles in guidata 
+guidata(hTabFig,TabHandles); 
+  
+%% Make Tab 1 the active tab upon initialisation 
+TabSelectCallback(0,0,1); 
 % end
-% 
-%     function TabSelectCallback(~,~,SelectedTab)
-%     % All tab selection pushbuttons are greyed out and uipanels are set to 
-%     % visible off, then the selected panel is made visible and its selection 
-%     % pushbutton is highlighted. 
-% 
-%     % Set up variables 
-%     TabHandles = guidata(gcf); 
-%     NumTabs = size(TabHandles,1)-2; 
-%     white = TabHandles{NumTabs+2,2}; 
-%     grey = TabHandles{NumTabs+2,3}; 
-% 
-%         % Turn off all tabs 
-%         for TabCount = 1:NumTabs     
-%             set(TabHandles{TabCount,1},'Visible','off');     
-%             set(TabHandles{TabCount,2},'BackgroundColor',grey); 
-%         end 
-% 
-%         % Enable the selected tab 
-%         set(TabHandles{SelectedTab,1},'Visible','on'); 
-%        set(TabHandles{SelectedTab,2},'BackgroundColor',white); 
-%     end
+
+    function TabSelectCallback(~,~,SelectedTab)
+    % All tab selection pushbuttons are greyed out and uipanels are set to 
+    % visible off, then the selected panel is made visible and its selection 
+    % pushbutton is highlighted. 
+
+    % Set up variables 
+    TabHandles = guidata(gcf); 
+    NumTabs = size(TabHandles,1)-2; 
+    white = TabHandles{NumTabs+2,2}; 
+    grey = TabHandles{NumTabs+2,3}; 
+
+        % Turn off all tabs 
+        for TabCount = 1:NumTabs     
+            set(TabHandles{TabCount,1},'Visible','off');     
+            set(TabHandles{TabCount,2},'BackgroundColor',grey); 
+        end 
+
+        % Enable the selected tab 
+        set(TabHandles{SelectedTab,1},'Visible','on'); 
+       set(TabHandles{SelectedTab,2},'BackgroundColor',white); 
+    end
 %           
     %% Models 
     % Average SOH over battery lifetime: 

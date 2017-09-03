@@ -70,6 +70,7 @@ TabHandles{NumTabs+2,3} = grey;            % Background color
     for CountTabs = 1:NumTabs 
 
     set(TabHandles{CountTabs,2},'callback',{@TabSelectCallback,CountTabs}); 
+    
     end 
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,7 +78,19 @@ TabHandles{NumTabs+2,3} = grey;            % Background color
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+uicontrol('Style', 'text','Parent', TabHandles{1,1},... 
+    'Position', [368 452 355 25],'string', 'CHARGING',... 
+    'BackgroundColor', grey,'HorizontalAlignment', 'center',...     
+    'FontName', 'arial','FontWeight', 'bold','FontSize', 14); 
+charge_info = [ 1 9 3]
 
+cstat = uitable('Position',[368 255 355 195],'Parent', TabHandles{1,1},...   
+'Data',charge_info,'RowName',[],'ColumnName',[],'FontSize',12,... 
+    'ColumnWidth',{151 81 121}); 
+  
 
-
+%Set up pop up menu with pulldown data for states
+state_codes = [4814 4825 0800 6000 3000 7000 2000 4000];
+state_names = ["Townsville, QLD", "Mount Isa, QLD", "Darwin, NT","Perth, WA", "Melbourne, VIC",...
+    "Horbart, TAS", "Sydney, NSW", "Brisbane, QLD"];
 

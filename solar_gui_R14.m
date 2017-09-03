@@ -128,6 +128,10 @@ grey = 0.9*white;
        % Set up the time
        clock_disp();
        
+       
+       
+
+       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Define Tab 1 content  (TAB JUMP)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
@@ -694,6 +698,7 @@ orientation_edit_display = uicontrol('Units', 'normalized', 'Position',[0.67 0.3
                  set(text_state_question,'Visible','On'); 
                  set(postcode_edit,'Visible','On');
                  set(text_state_codes,'Visible','On');
+                 set(post_code_table,'Visible','On');
                         progress_bar(9);
     end
 
@@ -717,6 +722,25 @@ state_names = ["Townsville, QLD", "Mount Isa, QLD", "Darwin, NT","Perth, WA", "M
 
 postcode_edit = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.1], 'Style', 'edit','Parent', TabHandles{prompt_page,1},...
    'Callback', @state_check_next, 'tag', 'state_entry', 'Visible', 'Off', 'FontSize', 20);
+
+%        f = figure('Position',[100 100 400 150]);
+state_names = {'Townsville, QLD'; 'Mount Isa, QLD'; 'Darwin, NT'; 'Perth, WA'; 'Melbourne, VIC';...
+    'Horbart, TAS'; 'Sydney, NSW'; 'Brisbane, QLD'};
+checkbox1= num2cell([4814; 4825; 0800])
+yourdata =[num2cell(state_codes') state_names]  
+columnname =   {'Postcode', 'Location'};
+columnformat = {'char', 'char'};
+columneditable =  [false false]; 
+post_code_table = uitable('Units','normalized','Position',[0.15 0.35 0.18 0.3],'Parent', TabHandles{prompt_page,1},...
+          'Data', yourdata, 'Visible', 'Off',... 
+          'ColumnName', columnname,...
+          'ColumnFormat', columnformat,...
+          'ColumnEditable', columneditable,...
+          'RowName',[] ,'BackgroundColor',[.7 .9 .8],...
+          'ForegroundColor',[0 0 0],'ColumnWidth',{'auto' 140},'FontSize',14);
+       
+
+
 
 persistent state_input
     function state_check_next(hObject, eventdata)    
@@ -770,7 +794,8 @@ state_next_button = uicontrol('Units', 'normalized', 'Position',[0.35 0.2 0.3 0.
                 
                 set(text_bill_question,'Visible','On')         
                 set(bill_edit,'Visible','On') 
-                set(bill_skip_button,'Visible','On') 
+                set(bill_skip_button,'Visible','On')
+                 set(post_code_table,'Visible','Off') 
                         progress_bar(11);
     end
 
@@ -1659,11 +1684,13 @@ end
             'string',sprintf('%d:%d',hr,min),'BackgroundColor', white,... 
             'HorizontalAlignment','left','FontName','arial','FontWeight','bold', ... 
             'FontSize',14); 
+        axis off;
     end
 
 function progress_bar(progress_step)
         %  Progess bar in yellow to help user
         axes('Units','normalized','Position',[0.3 0.05 0.4 0.07],'Parent', TabHandles{1,1}); 
+        axis off;
         area1 = area([0 progress_step/number_of_inputs],[1 1]); 
         set(gca,'xtick',[]); set(gca,'ytick',[]); 
         set(gca,'xlim',[0 1]);  
