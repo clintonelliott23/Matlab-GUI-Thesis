@@ -29,7 +29,7 @@ ScreenSize = get(0, 'ScreenSize'); % SC will be an array of [u v x y]
 MaxMonitorwidth = ScreenSize(3);
 MaxMonitorheight = ScreenSize(4);
 % Set figure window size
-FigScale = 0.3; % adjustable parameter for changing figure size
+FigScale = 0.6; % adjustable parameter for changing figure size
 % Get user screen size
 MaxWindowX = round(MaxMonitorwidth*FigScale);
 MaxWindowY = round(MaxMonitorheight*FigScale);
@@ -1368,7 +1368,7 @@ persistent yearly_savings_adj_infla
                buddy(2).FaceColor = [.9 .1 .1];
 
                 % Label, Dimension and Legent the GRPAH
-        title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','yellow','FontSize', 16);
+        title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','yellow');
         xlabel('Years','FontSize', 16);                      ylabel('Cost $AUD','FontSize', 16);          
          xlim([0, 21]);                  %ylim([4000, 6000]);
          legend({'Solar/Battery','Normal'},'Location','northwest');
@@ -1554,10 +1554,10 @@ function cost_analysis(daily_savings)
             pa1 = x_unitless*pa  ;
 
 
-%              maintenance_cost = 0.015*cost_solar_input*20
+%             maintenance_cost = 0.015*cost_solar_input*1000;
 %             salvage_cost = solar_size_input*0.21*1000;
 
-            LCC = cost_solar_input + cost_battery_input*2 
+            LCC = cost_solar_input + cost_battery_input*2
             ALCC = LCC/pa;
 
                 for i = 1:1:3 
@@ -1587,10 +1587,9 @@ function cost_analysis(daily_savings)
             end
 %             disp(cash_flows_discounted);
              NPV = sum(cash_flows_discounted)-investment_cost  
-             % I think the method is a better indication not the blanked
-             % out version (this takes into account inflation and discount)
-%              ROI = ((daily_savings*365*20 - investment_cost) / investment_cost)*100/20
-             ROI = ((NPV - investment_cost )*100/20) / investment_cost
+             % I
+             ROI = ((daily_savings*365*20 - investment_cost) / investment_cost)*100/20
+             ROI2 = ((NPV - investment_cost )*100/20) / investment_cost
              
              %Solve IRR Equation
             IRR_eqn = IRR_eqn - investment_cost == 0;

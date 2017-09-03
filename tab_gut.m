@@ -1,8 +1,8 @@
 
 
 syms IRR_sym
-investment_cost = 50000;
-cash_flows_discounted = [12000 15000 18000 71000 20000];
+investment_cost = 800;
+cash_flows_discounted = [100 200 300 400 500];
 IRR_eqn = 0;
 
 for i = 1:1:5
