@@ -925,8 +925,8 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.95 0.05 0.05 0.0
                     solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
                     cost_solar_input = 6747;            set(solar_cost_value, 'String', num2str(cost_solar_input))
                     battery_installed = 0;
-                    battery_size_input =  0;      set(battery_size_value, 'String', num2str(battery_size_input) )
-                    cost_battery_input =  0;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                    
+                    battery_size_input =  6.5;      set(battery_size_value, 'String', num2str(battery_size_input) )
+                    cost_battery_input =  8900;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                    
                     roof_tilt_input = 25;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
                     orientation_input = 1;          set(orientation_value, 'String', 'North')
                     bill_input = 550;                set(bill_value, 'String', num2str(bill_input) )
@@ -951,15 +951,15 @@ PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input.
 %         close(loading_bar) 
 %         
         
-        TabSellectCallback(0,0,2); 
-        pause(0.5)
-        TabSellectCallback(0,0,3); 
-          pause(0.5)
-        TabSellectCallback(0,0,4); 
-          pause(0.5)
         TabSellectCallback(0,0,5); 
-                  pause(0.5)
-        TabSellectCallback(0,0,2);
+%         pause(0.5)
+%         TabSellectCallback(0,0,3); 
+%           pause(0.5)
+%         TabSellectCallback(0,0,4); 
+%           pause(0.5)
+%         TabSellectCallback(0,0,5); 
+%                   pause(0.5)
+%         TabSellectCallback(0,0,2);
     end
 
 
@@ -1178,6 +1178,48 @@ persistent daily_savings
          production_graph() 
          cost_analysis(daily_savings)
          finance_graph()
+         
+
+       if (daily_storage == 0)
+           pie_storage = 0.0000000000001;
+       else
+           pie_storage = daily_storage;
+       end
+        source_energy = [kwhr_used_from_solar    pie_storage    daily_imported]/...
+            (kwhr_used_from_solar + pie_storage + daily_imported) 
+  
+        % Pie chart
+         haxes_pie = axes('Parent', TabHandles{display_page,1}, ...
+                                    'Units', 'normalized', ...
+                                    'Position', [0.7 0.665 0.3 0.3]);              
+        pie_face = pie(haxes_pie,source_energy)
+        title(haxes_pie,'Daily Energy Sources');
+         jooda  = pie_face(1); jooda.FaceColor = 'green'; jooda  = pie_face(2); jooda .FontSize = 12;
+         jooda  = pie_face(3); jooda.FaceColor = 'yellow'; jooda  = pie_face(4); jooda .FontSize = 12;
+         jooda  = pie_face(5); jooda.FaceColor = 'red'; jooda  = pie_face(6); jooda .FontSize = 10;  
+         %         jooda .BackgroundColor = 'green';
+            hText = findobj(pie_face,'Type','text') % text object handles
+            percentValues = get(hText,'String'); % percent values
+            energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
+            combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
+            oldExtents_cell = get(hText,'Extent'); % cell array
+            oldExtents = cell2mat(oldExtents_cell); % numeric array
+            hText(1).String = combinedtxt(1);
+            hText(2).String = combinedtxt(2);
+            hText(3).String = combinedtxt(3);
+            newExtents_cell = get(hText,'Extent'); % cell array
+            newExtents = cell2mat(newExtents_cell); % numeric array 
+            width_change = newExtents(:,3)-oldExtents(:,3);
+            signValues = sign(oldExtents(:,1));
+            offset = signValues.*(width_change/2);
+            textPositions_cell = get(hText,{'Position'}); % cell array
+            textPositions = cell2mat(textPositions_cell); % numeric array
+            textPositions(:,1) = textPositions(:,1) + offset; % add offset 
+            hText(1).Position = textPositions(1,:);
+            hText(2).Position = textPositions(2,:);
+            hText(3).Position = textPositions(3,:);
+   
+         
     end
 
 % Function for findin the liner change between nasa data
@@ -1478,7 +1520,7 @@ disp_prod_value = uicontrol('Units', 'normalized', 'Position',[0.375 0.43+y_prod
 
 % Create the static text for production
 disp_stored_title = uicontrol('Units', 'normalized', 'Position',[0.375 0.195+y_disp_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{display_page,1},...
-    'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 15);
+    'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
 % Edit boxes for production
 disp_stored_value = uicontrol('Units', 'normalized', 'Position',[0.375 0.125+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
@@ -1509,6 +1551,7 @@ disp_imported_title = uicontrol('Units', 'normalized', 'Position',[0.725 0.43+y_
 disp_imported_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.43+y_prod_offset 0.07 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
+                      
 
 
 
