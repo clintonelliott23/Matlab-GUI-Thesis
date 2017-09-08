@@ -42,8 +42,8 @@ grey = 0.9*white;
         
 %   Set Number of tabs and tab labels.  Make sure the number of tab labels
 %   match the HumberOfTabs setting.
-        NumTabs = 5;               % Number of tabs to be generated
-        TabLabels = {'Data Aquisition'; 'Input Data'; 'Estimated Production'; 'Finance Options'; 'Display';};
+        NumTabs = 8;               % Number of tabs to be generated
+        TabLabels = {'Data Aquisition'; 'Input Data'; 'Estimated Production'; 'Finance Options'; 'Display';'Production Graph';'Yearly Graph';'Pie Graph';};
         if size(TabLabels,1) ~= NumTabs
             errordlg('Number of tabs and tab labels must be the same','Setup Error');
             return
@@ -926,7 +926,7 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.95 0.05 0.05 0.0
                     solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
                     cost_solar_input = 7000;            set(solar_cost_value, 'String', num2str(cost_solar_input))
                     battery_installed = 1;
-                    battery_size_input =  1;      set(battery_size_value, 'String', num2str(battery_size_input) )
+                    battery_size_input =  10;      set(battery_size_value, 'String', num2str(battery_size_input) )
                     cost_battery_input =  9700;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                    
                     roof_tilt_input = 19.2;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
                     orientation_input = 1;          set(orientation_value, 'String', 'North')
@@ -1220,6 +1220,38 @@ persistent daily_savings
             hText(2).Position = textPositions(2,:);
             hText(3).Position = textPositions(3,:);
    
+            
+                    % Pie chart
+         haxes_pie8 = axes('Parent', TabHandles{8,1}, ...
+                                    'Units', 'normalized', ...
+                                    'Position', [0.05 0.1 0.9 0.75]);              
+        pie_face8 = pie(haxes_pie8,source_energy);
+        title(haxes_pie8,'Daily Energy Sources');
+        set(gca,'fontsize',20)
+         jooda  = pie_face8(1); jooda.FaceColor = 'green'; jooda  = pie_face8(2); jooda .FontSize = 16;
+         jooda  = pie_face8(3); jooda.FaceColor = 'yellow'; jooda  = pie_face8(4); jooda .FontSize = 16;
+         jooda  = pie_face8(5); jooda.FaceColor = 'red'; jooda  = pie_face8(6); jooda .FontSize = 16;  
+         %         jooda .BackgroundColor = 'green';
+            hText = findobj(pie_face8,'Type','text'); % text object handles
+            percentValues = get(hText,'String'); % percent values
+            energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
+            combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
+            oldExtents_cell = get(hText,'Extent'); % cell array
+            oldExtents = cell2mat(oldExtents_cell); % numeric array
+            hText(1).String = combinedtxt(1);
+            hText(2).String = combinedtxt(2);
+            hText(3).String = combinedtxt(3);
+            newExtents_cell = get(hText,'Extent'); % cell array
+            newExtents = cell2mat(newExtents_cell); % numeric array 
+            width_change = newExtents(:,3)-oldExtents(:,3);
+            signValues = sign(oldExtents(:,1));
+            offset = signValues.*(width_change/2);
+            textPositions_cell = get(hText,{'Position'}); % cell array
+            textPositions = cell2mat(textPositions_cell); % numeric array
+            textPositions(:,1) = textPositions(:,1) + offset; % add offset 
+            hText(1).Position = textPositions(1,:);
+            hText(2).Position = textPositions(2,:);
+            hText(3).Position = textPositions(3,:);
          
     end
 
@@ -1280,7 +1312,7 @@ persistent daily_savings
                         PlotOffset = 40;
                         haxes2 = axes('Parent', TabHandles{production_page,1}, ...
                             'Units', 'normalized', ...
-                            'Position', [0.075 0.1 0.9 0.45]);
+                               'Position', [0.075 0.1 0.9 0.45]);
        
             month_name = ({'Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';'Average'});         
         
@@ -1291,6 +1323,7 @@ persistent daily_savings
         end
         
         bar(haxes2,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+
         set(gca, 'XTick', 1:13,'xticklabel',month_name)
         
                         % Label, Dimension and Legent the GRPAH
@@ -1310,7 +1343,30 @@ persistent daily_savings
                   'YColor'      , 'yellow', ...
                   'LineWidth'   , 3         );
                 % End of Graph Labelling
+                
+                % Create graph on another tab
 
+                      haxes6 = axes('Parent', TabHandles{6,1}, ...
+                            'Units', 'normalized', ...
+                            'Position', [0.075 0.15 0.9 0.75]);     
+                bar(haxes6,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                set(gca, 'XTick', 1:13,'xticklabel',month_name)
+                             title('Monthly Average kWhr Production','Color','black','FontSize', 13);
+                xlabel('Month');                      ylabel('Production (kWhr)');  
+                % legend({'RAW Signal'});
+                set(gca, ...
+                  'Box'         , 'off'     , ...
+                  'TickDir'     , 'out'     , ...
+                  'TickLength'  , [.01 .01] , ...
+                  'XMinorTick'  , 'on'      , ...
+                  'YMinorTick'  , 'on'      , ...
+                  'YGrid'       , 'on'      , ...
+                  'XGrid'       , 'off'      , ...
+                  'Color','white', 'FontSize', 13,...           
+                  'XColor'      , 'black', ...
+                  'YColor'      , 'black', ...
+                  'LineWidth'   , 3         );
+                % End of Graph Labelling   
     end
 
 
@@ -1453,7 +1509,7 @@ persistent yearly_savings_adj_infla
 
                 % Label, Dimension and Legent the GRPAH
         title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','yellow','FontSize', 16);
-        xlabel('Years','FontSize', 16);                      ylabel('Cost $AUD','FontSize', 16);          
+        xlabel('Years','FontSize', 16);                      ylabel('Cost ($AUD)','FontSize', 16);          
          xlim([0, 21]);  
 %          ylim([0, 30]);
          legend({'Solar/Battery','Normal'},'Location','northwest');
@@ -1470,7 +1526,40 @@ persistent yearly_savings_adj_infla
           'YColor'      , 'yellow', ...
           'LineWidth'   , 2         );
         % End of Graph Labelling
+       
+                    haxes7 = axes('Parent', TabHandles{7,1}, ...
+                    'Units', 'normalized', ...
+                    'Position', [0.08 0.15 0.9 0.75]);
+                
+        % added in for when you make money with solar
+              if     (yearly_cost_witsol_plot > 0) 
+                     buddy7 = bar(haxes7,bar_data_finance','stacked','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+              else      
+                  buddy7 = bar(haxes7,bar_data_finance','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+              end
+                     buddy7(2).FaceColor = [.9 .1 .1];
+                    % Label, Dimension and Legent the GRPAH
+        title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','black','FontSize', 16);
+        xlabel('Years','FontSize', 16);                      ylabel('Cost ($AUD)','FontSize', 16);          
+         xlim([0, 21]);  
+%          ylim([0, 30]);
+         legend({'Solar/Battery','Normal'},'Location','northwest');
+        set(gca, ...
+          'Box'         , 'off'     , ...
+          'TickDir'     , 'out'     , ...
+          'TickLength'  , [.01 .01] , ...
+          'XMinorTick'  , 'on'      , ...
+          'YMinorTick'  , 'on'      , ...
+          'YGrid'       , 'off'      , ...
+          'XGrid'       , 'on'      , ...
+         'Color','white', 'FontSize', 13,...      
+          'XColor'      , 'black', ...
+          'YColor'      , 'black', ...
+          'LineWidth'   , 2         );
+        % End of Graph Labelling    
 
+        
+        
     end
 % Estimated daily savings
 savings_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.875+y_prod_offset 0.375 0.07], 'Style', 'text','Parent', TabHandles{finance_page,1},...
