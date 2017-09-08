@@ -43,7 +43,7 @@ grey = 0.9*white;
 %   Set Number of tabs and tab labels.  Make sure the number of tab labels
 %   match the HumberOfTabs setting.
         NumTabs = 8;               % Number of tabs to be generated
-        TabLabels = {'Data Aquisition'; 'Input Data'; 'Estimated Production'; 'Finance Options'; 'Display';'Production Graph';'Yearly Graph';'Pie Graph';};
+        TabLabels = {'Data Aquisition'; 'Input Data'; 'Estimated Production'; 'Finance Options'; 'Display';'2x Production Graph';'2x Yearly Graph';'5x Pie Graph';};
         if size(TabLabels,1) ~= NumTabs
             errordlg('Number of tabs and tab labels must be the same','Setup Error');
             return
@@ -927,18 +927,23 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.95 0.05 0.05 0.0
                     cost_solar_input = 7000;            set(solar_cost_value, 'String', num2str(cost_solar_input))
                     battery_installed = 1;
                     battery_size_input =  10;      set(battery_size_value, 'String', num2str(battery_size_input) )
-                    cost_battery_input =  9700;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                    
-                    roof_tilt_input = 19.2;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
+                    cost_battery_input =  9700;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                      
                     orientation_input = 1;          set(orientation_value, 'String', 'North')
                     bill_input = 0;                set(bill_value, 'String', num2str(bill_input) )
                     number_people_input = 3;        set(occupants_value, 'String', num2str(number_people_input))
-                    state_input =  4814;            
+                    
+                    
+                    %%% Change state
+                    state_input =  7000;    
+                    % Change Roof tilt
+                     roof_tilt_input = 42;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
+                    
+                    
                     set(state_value, 'String', 'qld') ; 
-                                                    set(postal_value, 'String', '4814')                                          
-                                                    set(tariff_value, 'String', '11')
-                                                    set(supplier_value, 'String', 'Ergon')
-                      
-                                                    set(enter_gui_button,'Visible','On')
+                    set(postal_value, 'String', '4814')                                          
+                    set(tariff_value, 'String', '11')
+                    set(supplier_value, 'String', 'Ergon')                     
+                    set(enter_gui_button,'Visible','On')
                    
 PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
             ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)                     
@@ -1143,11 +1148,13 @@ daily_savings_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.57
 % Calculation of PSH from tilt angle
 persistent kw_produced_daily
 persistent daily_savings
+persistent source_energy
     function PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
             ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)    
                  
         PSH_avg =  tilt_calculator (roof_tilt_input,13);
-        disp('Peak Sun Hours');   disp(PSH_avg);   
+%         disp('Peak Sun Hours');   
+%         disp(PSH_avg);   
         
         if bill_input == 0
         kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
@@ -1155,10 +1162,11 @@ persistent daily_savings
             kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
             kwhr_avg_found = bill_input/(90*tariff_rate_normal_found)
         end
-        disp('Average Kilowatts Hours For Household');   disp(kwhr_avg_found);   
+%         disp('Average Kilowatts Hours For Household'); 
+%         disp(kwhr_avg_found);   
         
-       kw_produced_daily = solar_size_input *  PSH_avg * performance_input
-       kwhr_used_from_solar = (10/percentage_input)*kw_produced_daily
+       kw_produced_daily = solar_size_input *  PSH_avg * performance_input;
+       kwhr_used_from_solar = (10/percentage_input)*kw_produced_daily;
        
       % Need to find the calculations
         daily_storage = battery_size_input;  
@@ -1180,14 +1188,21 @@ persistent daily_savings
          cost_analysis(daily_savings)
          finance_graph()
          
-
-       if (daily_storage == 0)
-           pie_storage = 0.0000000000001;
+        % protects the pie graph aagainst non-positive data
+       if (daily_storage <= 0)
+           pie_storage = 0.00000000001;
        else
            pie_storage = daily_storage;
        end
-        source_energy = [kwhr_used_from_solar    pie_storage    daily_imported]/...
-            (kwhr_used_from_solar + pie_storage + daily_imported) ;
+        if (daily_imported <= 0)
+           daily_imported_pie = 0.00000000001;
+       else
+           daily_imported_pie = daily_imported;
+       end
+       
+        source_energy = [kwhr_used_from_solar    pie_storage    daily_imported_pie]/...
+            (kwhr_used_from_solar + pie_storage + daily_imported_pie);
+        disp(source_energy(1,1));disp(source_energy(1,2));disp(source_energy(1,3));
   
         % Pie chart
          haxes_pie = axes('Parent', TabHandles{display_page,1}, ...
@@ -1416,9 +1431,9 @@ persistent daily_savings
                        end
                        
               kwhr_avg_found = kwhr_avg_data(row,column);  
-              tariff_found = kwhr_avg_data(row,column+2)
-              tariff_rate_normal_found = kwhr_avg_data(row,column+3)
-              solar_rate_feedin_found = kwhr_avg_data(row,column+4)
+              tariff_found = kwhr_avg_data(row,column+2);
+              tariff_rate_normal_found = kwhr_avg_data(row,column+3);
+              solar_rate_feedin_found = kwhr_avg_data(row,column+4);
     end
         
         
@@ -1733,7 +1748,7 @@ function cost_analysis(daily_savings)
 %              maintenance_cost = 0.015*cost_solar_input*20
 %             salvage_cost = solar_size_input*0.21*1000;
 
-            LCC = cost_solar_input + cost_battery_input*2 
+            LCC = cost_solar_input + cost_battery_input*2 ;
             ALCC = LCC/pa;
 
                 for i = 1:1:3 
@@ -1743,7 +1758,7 @@ function cost_analysis(daily_savings)
                 end      
             electricity_cost_ALCC = ALCC/(kw_produced_daily*365);
 
-            investment_cost = cost_solar_input + cost_battery_input*2
+            investment_cost = cost_solar_input + cost_battery_input*2;
             payback_period = investment_cost/ (daily_savings*365);
             
 
@@ -1762,11 +1777,11 @@ function cost_analysis(daily_savings)
                 IRR_eqn = IRR_eqn + ( cash_flows_discounted(1,i) / (1 + IRR_sym)^i );                
             end
 %             disp(cash_flows_discounted);
-             NPV = sum(cash_flows_discounted)-investment_cost  
+             NPV = sum(cash_flows_discounted)-investment_cost  ;
              % I think the method is a better indication not the blanked
              % out version (this takes into account inflation and discount)
-%              ROI = ((daily_savings*365*20 - investment_cost) / investment_cost)*100/20
-             ROI = ((NPV - investment_cost )*100/20) / investment_cost
+             ROI = ((daily_savings*365*20 - investment_cost) / investment_cost)*100/20
+%              ROI = ((NPV - investment_cost )*100/20) / investment_cost;
              
              %Solve IRR Equation
             IRR_eqn = IRR_eqn - investment_cost == 0;
@@ -1785,45 +1800,48 @@ function cost_analysis(daily_savings)
             end
             end
             %Display the IRR Value
-            disp('IRR Value:')
-            disp(IRR_val*100)
+%             disp('IRR Value:')
+%             disp(IRR_val*100)
           
             Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period,ROI)       
 end
 
 
 function Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tariff_rate_normal_found,daily_exported,daily_imported,daily_savings)
-      set(daily_usuage_value,'string', num2str(kwhr_avg_found))
-      set(daily_production_value,'string', num2str(kw_produced_daily))
-      set(daily_storage_value , 'String', num2str(daily_storage))
-      set(daily_exported_value , 'String', num2str(daily_exported))     
-      set(daily_normal_cost_value , 'String', num2str(kwhr_avg_found*tariff_rate_normal_found)) 
-      set(daily_import_cost_value , 'String', num2str(daily_imported*tariff_rate_normal_found)) 
-      set(daily_export_cost_value , 'String', num2str(daily_exported*solar_rate_feedin_found))     
-      set(daily_savings_cost_value , 'String', num2str(daily_savings))     
+      set(daily_usuage_value,'string', num2str(kwhr_avg_found));                            disp(kwhr_avg_found)
+      set(daily_production_value,'string', num2str(kw_produced_daily));                     disp(kw_produced_daily)
+      set(daily_storage_value , 'String', num2str(daily_storage));                          disp(daily_storage)
+      set(daily_exported_value , 'String', num2str(daily_exported)) ;                       disp(daily_exported)
+      set(daily_normal_cost_value , 'String', num2str(kwhr_avg_found*tariff_rate_normal_found)) ;       disp(kwhr_avg_found*tariff_rate_normal_found)
+      set(daily_import_cost_value , 'String', num2str(daily_imported*tariff_rate_normal_found));        disp(daily_imported*tariff_rate_normal_found)
+      set(daily_export_cost_value , 'String', num2str(daily_exported*solar_rate_feedin_found)) ;        disp(daily_exported*solar_rate_feedin_found)
+      set(daily_savings_cost_value , 'String', num2str(daily_savings)) ;                                 disp(daily_savings)  
+      disp(source_energy)
       
-      set(disp_used_value,'string', num2str(kwhr_avg_found))
-      set(disp_prod_value,'string', num2str(kw_produced_daily))
-      set(disp_stored_value , 'String', num2str(daily_storage))
-      set(disp_exported_value , 'String', num2str(daily_exported))
-       set(disp_imported_value , 'String', num2str(daily_imported))
+      set(disp_used_value,'string', num2str(kwhr_avg_found));
+      set(disp_prod_value,'string', num2str(kw_produced_daily));
+      set(disp_stored_value , 'String', num2str(daily_storage));
+      set(disp_exported_value , 'String', num2str(daily_exported));
+      set(disp_imported_value , 'String', num2str(daily_imported));
       
       
 end
 function Update_Values_cost(electricity_cost_ALCC,electricity_cost_ANNPMT,daily_savings,payback_period,ROI)
-      set(ALCC_value,'string', num2str(electricity_cost_ALCC))
-      set(ANNPMT_opt_value,'string', num2str(electricity_cost_ANNPMT(1,1)))
-      set(ANNPMT_likely_value , 'String', num2str(electricity_cost_ANNPMT(1,2)))
-      set(ANNPMT_pess_value , 'String', num2str(electricity_cost_ANNPMT(1,3)))
-      set(NPV_value, 'String', num2str(NPV)) 
-      set(ROI_value, 'String', num2str(ROI)) 
-      set(IRR_value, 'String', num2str(IRR_val*100))   
-      
-      set(monthly_saving_value,'string', num2str(daily_savings*30)) 
-      set(yearly_saving_value,'string', num2str(daily_savings*365))   
-      set(ten_year_saving_value,'string', num2str(daily_savings*3650))   
-      set(twen_year_saving_value,'string', num2str(daily_savings*3650*2))   
-       set(payback_saving_value,'string', num2str(payback_period))    
+      set(ALCC_value,'string', num2str(electricity_cost_ALCC));                            disp(electricity_cost_ALCC)
+      set(ANNPMT_opt_value,'string', num2str(electricity_cost_ANNPMT(1,1)));               disp(electricity_cost_ANNPMT(1,1))
+      set(ANNPMT_likely_value , 'String', num2str(electricity_cost_ANNPMT(1,2)));          disp(electricity_cost_ANNPMT(1,2))
+      set(ANNPMT_pess_value , 'String', num2str(electricity_cost_ANNPMT(1,3)));            disp(electricity_cost_ANNPMT(1,3))
+      set(IRR_value, 'String', num2str(IRR_val*100));                                      disp(IRR_val*100)
+      set(ROI_value, 'String', num2str(ROI));                                              disp(ROI)
+     
+      set(monthly_saving_value,'string', num2str(daily_savings*30));                       disp(daily_savings*30)
+      set(yearly_saving_value,'string', num2str(daily_savings*365));                       disp(daily_savings*365)  
+      set(ten_year_saving_value,'string', num2str(daily_savings*3650));                    disp(daily_savings*3650) 
+      set(twen_year_saving_value,'string', num2str(daily_savings*3650*2));                 disp(daily_savings*3650*2)  
+      set(payback_saving_value,'string', num2str(payback_period));                         disp(payback_period)
+      set(NPV_value, 'String', num2str(NPV));                                              disp(NPV)   
+         
+
 end
     function clock_disp()
         time_all = fix(clock);
@@ -1878,4 +1896,5 @@ function TabSellectCallback(~,~,SelectedTab)
    
 end
 
- 
+
+%1900 boom
