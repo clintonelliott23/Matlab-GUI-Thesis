@@ -145,7 +145,7 @@ number_of_inputs = 13;
 %% Create an Entry Button
 % Create standard size for questions buttons and positions
 
-standard_question = [0.5-0.35/2 0.7 0.35 0.12]
+standard_question = [0.5-0.35/2 0.7 0.35 0.12];
 standard_yes = [0.2 0.4 0.2 0.2];
 standard_no = [0.6 0.4 0.2 0.2];
 % Create a button to enter calculator
@@ -728,12 +728,12 @@ state_names = {'Townsville, QLD'; 'Mount Isa, QLD'; 'Darwin, NT'; 'Perth, WA'; '
     'Horbart, TAS'; 'Sydney, NSW'; 'Brisbane, QLD'};
 
 
-yourdata =[num2cell(state_codes') state_names]  
+state_labels =[num2cell(state_codes') state_names] ; 
 columnname =   {'Postcode', 'Location'};
 columnformat = {'char', 'char'};
 columneditable =  [false false]; 
 post_code_table = uitable('Units','normalized','Position',[0.15 0.35 0.18 0.3],'Parent', TabHandles{prompt_page,1},...
-          'Data', yourdata, 'Visible', 'Off',... 
+          'Data', state_labels, 'Visible', 'Off',... 
           'ColumnName', columnname,...
           'ColumnFormat', columnformat,...
           'ColumnEditable', columneditable,...
@@ -924,14 +924,14 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.95 0.05 0.05 0.0
                     solar_installed = 1;                    
                     solar_size_input = 5;         set(solar_size_value, 'String', num2str(solar_size_input))
                     cost_solar_input = 6747;            set(solar_cost_value, 'String', num2str(cost_solar_input))
-                    battery_installed = 0;
-                    battery_size_input =  6.5;      set(battery_size_value, 'String', num2str(battery_size_input) )
-                    cost_battery_input =  8900;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                    
-                    roof_tilt_input = 25;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
+                    battery_installed = 1;
+                    battery_size_input =  10;      set(battery_size_value, 'String', num2str(battery_size_input) )
+                    cost_battery_input =  9700;      set(battery_cost_value, 'String', num2str(cost_battery_input) )                    
+                    roof_tilt_input = 1;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
                     orientation_input = 1;          set(orientation_value, 'String', 'North')
                     bill_input = 550;                set(bill_value, 'String', num2str(bill_input) )
                     number_people_input = 3;        set(occupants_value, 'String', num2str(number_people_input))
-                    state_input =  4814;            
+                    state_input =  7000;            
                     set(state_value, 'String', 'QLD') ; 
                                                     set(postal_value, 'String', '4814')                                          
                                                     set(tariff_value, 'String', '11')
@@ -1192,13 +1192,13 @@ persistent daily_savings
          haxes_pie = axes('Parent', TabHandles{display_page,1}, ...
                                     'Units', 'normalized', ...
                                     'Position', [0.7 0.665 0.3 0.3]);              
-        pie_face = pie(haxes_pie,source_energy)
+        pie_face = pie(haxes_pie,source_energy);
         title(haxes_pie,'Daily Energy Sources');
          jooda  = pie_face(1); jooda.FaceColor = 'green'; jooda  = pie_face(2); jooda .FontSize = 12;
          jooda  = pie_face(3); jooda.FaceColor = 'yellow'; jooda  = pie_face(4); jooda .FontSize = 12;
          jooda  = pie_face(5); jooda.FaceColor = 'red'; jooda  = pie_face(6); jooda .FontSize = 10;  
          %         jooda .BackgroundColor = 'green';
-            hText = findobj(pie_face,'Type','text') % text object handles
+            hText = findobj(pie_face,'Type','text'); % text object handles
             percentValues = get(hText,'String'); % percent values
             energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
             combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
@@ -1225,35 +1225,41 @@ persistent daily_savings
 % Function for findin the liner change between nasa data
     function [PSH_avg] =  tilt_calculator (roof_tilt_input,month)
         psh_row_index = 0;
+        month = month + 1;
                 switch state_input
                         case 4814                        
                         case 4825
-                            psh_row_index =  6;
+                            psh_row_index =  5;
                         case 0800
-                             psh_row_index =  12;
+                             psh_row_index =  10;
                         case 6000
-                            psh_row_index =  18;
+                            psh_row_index =  15;
                         case 3000
-                             psh_row_index =  24;
+                             psh_row_index =  20;
                         case 7000
-                            psh_row_index =  30;
+                            psh_row_index =  25;
                         case 2000
-                             psh_row_index =  36;
+                             psh_row_index =  30;
                        case 4000
-                             psh_row_index =  42; 
-                    end   
- 
-                if  ((roof_tilt_input >= 0) & (roof_tilt_input <= 4))
-                    max_tilt = 4;                      min_tilt = 0;
+                             psh_row_index =  35; 
+                end   
+                max_tilt0 = solar_psh_data(psh_row_index+1,1);
+                max_tilt1 = solar_psh_data(psh_row_index+2,1); 
+                max_tilt2 = solar_psh_data(psh_row_index+3,1); 
+                max_tilt3 = solar_psh_data(psh_row_index+4,1); 
+                max_tilt4 = solar_psh_data(psh_row_index+5,1); 
+                    
+                if  ((roof_tilt_input >= max_tilt0) & (roof_tilt_input <= max_tilt1))
+                    max_tilt = max_tilt1;                      min_tilt = max_tilt0;
                     max_psh = solar_psh_data(2+psh_row_index,month);     min_psh = solar_psh_data(1+psh_row_index,month);
-               elseif ((roof_tilt_input > 4) & (roof_tilt_input <= 19))
-                    max_tilt = 19;                      min_tilt = 4;
+               elseif ((roof_tilt_input > max_tilt1) & (roof_tilt_input <= max_tilt2))
+                    max_tilt = max_tilt2;                      min_tilt = max_tilt1;                
                     max_psh = solar_psh_data(3+psh_row_index,month);     min_psh = solar_psh_data(2+psh_row_index,month);
-               elseif ((roof_tilt_input > 19) & (roof_tilt_input <= 34))
-                    max_tilt = 34;                      min_tilt = 19;
+               elseif ((roof_tilt_input > max_tilt2) & (roof_tilt_input <= max_tilt3))
+                    max_tilt = max_tilt3;                      min_tilt = max_tilt2;              
                     max_psh = solar_psh_data(4+psh_row_index,month);     min_psh = solar_psh_data(3+psh_row_index,month);
-               elseif ((roof_tilt_input> 34) & (roof_tilt_input <= 90))
-                    max_tilt = 90;                      min_tilt = 34;
+               elseif ((roof_tilt_input> max_tilt3) & (roof_tilt_input <= max_tilt4))
+                    max_tilt = max_tilt4;                      min_tilt = max_tilt3;            
                     max_psh = solar_psh_data(5+psh_row_index,month);     min_psh = solar_psh_data(4+psh_row_index,month);
                 end
                 
