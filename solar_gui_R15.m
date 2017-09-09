@@ -20,8 +20,8 @@ set(0,'DefaultFigureVisible','on');
  
 %% Load Essential Data and Updates
 % NASA Data
-solar_psh_data = importdata('kwh_day_avg_month_nasa.mat');
-kwhr_avg_data = importdata('gov_kwhr_avg_data.mat');
+solar_psh_data = importdata('PSH_NASA_Data.mat');
+kwhr_avg_data = importdata('Daily_Usage_Gov_Data.mat');
         
    %% Find Screen Size and Calculate Window
 % Size of primary display, returned as a four-element vector of the form [left bottom width height].
@@ -1368,6 +1368,7 @@ persistent source_energy
                 set(gca, 'XTick', 1:13,'xticklabel',month_name)
                              title('Monthly Average kWhr Production','Color','black','FontSize', 13);
                 xlabel('Month');                      ylabel('Production (kWhr)');  
+               ylim([0 30]);
                 % legend({'RAW Signal'});
                 set(gca, ...
                   'Box'         , 'off'     , ...
@@ -1780,8 +1781,9 @@ function cost_analysis(daily_savings)
              NPV = sum(cash_flows_discounted)-investment_cost  ;
              % I think the method is a better indication not the blanked
              % out version (this takes into account inflation and discount)
-             ROI = ((daily_savings*365*20 - investment_cost) / investment_cost)*100/20
-%              ROI = ((NPV - investment_cost )*100/20) / investment_cost;
+             
+%              ROI = ((daily_savings*365*20 - investment_cost) / investment_cost)*100/20
+              ROI = ((NPV - investment_cost )*100) / investment_cost;
              
              %Solve IRR Equation
             IRR_eqn = IRR_eqn - investment_cost == 0;
