@@ -934,9 +934,9 @@ prefill_button = uicontrol('Units', 'normalized', 'Position',[0.95 0.05 0.05 0.0
                     
                     
                     %%% Change state
-                    state_input =  7000;    
+                    state_input =  4814;    
                     % Change Roof tilt
-                     roof_tilt_input = 42;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
+                     roof_tilt_input = 19;           set(tilt_value, 'String', num2str(roof_tilt_input) ) 
                     
                     
                     set(state_value, 'String', 'qld') ; 
