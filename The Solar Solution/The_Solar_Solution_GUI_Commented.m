@@ -335,7 +335,7 @@ function The_Solar_Solution_GUI()
 %% Solar Installed
 	% Create the related questions
         text_solar_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'Do you have a Solar System?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+            'String', 'Do you have a solar system?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
     % Create button if yes
@@ -350,7 +350,7 @@ function The_Solar_Solution_GUI()
 
 	% Create the size question
         solar_size_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'What is the size of your Solar System (KW)?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+            'String', 'What is the size of your solar system (kW)?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');      
     
 	% Create persistent variables    
@@ -419,13 +419,13 @@ function The_Solar_Solution_GUI()
                 set(cost_next_button,'Visible','ON') 
         % Find the answer and set output                                                              
                 index = get(hObject, 'Value');         
-                cost_solar_input = solar_cost(index)*1000 
+                cost_solar_input = solar_cost(index) 
                 set(solar_cost_value, 'String', num2str(solar_cost(index)))
                 progress_bar(5.75);                               
         end
  
     % Dropdown list
-        solar_cost = [4 5 6 7 8 9 10 11 13 14 16];
+        solar_cost = [4000 5000 6000 7000 8000 9000 10000 11000 13000 14000 16000];
         
     % Set up pop up menu with pulldown data
         cost_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
@@ -439,7 +439,7 @@ function The_Solar_Solution_GUI()
 %% Battery Installed
 	% Create the related questions
         text_battery_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'Do you have a battery?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+            'String', 'Do you have a battery energy storage (BES) system?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');
 
 	% Create button if yes battery
@@ -454,7 +454,7 @@ function The_Solar_Solution_GUI()
         
 	% Create what size battery       
         battery_size_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'What is the size of your Battery (KWHR)?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
+            'String', 'What is the size of your BES system (kWhr)?', 'Visible', 'On','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF');  
         
 	% Create persistent variables    
@@ -518,7 +518,7 @@ function The_Solar_Solution_GUI()
 %% Cost of Battery
 	% Create the related questions
         cost_battery_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'How much did your battery cost ($)?','Parent', TabHandles{prompt_page,1},...
+            'String', 'How much did your BES system cost ($)?','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20, 'Visible', 'OFF'); 
         
 	% Create persistent variables        
@@ -629,7 +629,7 @@ function The_Solar_Solution_GUI()
 %% Roof Orientation
 	% Create the related questions
         text_orientation_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'Which orientation is your roof?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
+            'String', 'What orientation is your roof?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20);
 
     % Load Compass Image
@@ -840,7 +840,7 @@ function The_Solar_Solution_GUI()
 %% Bill Entry
 	% Create the related questions
         text_bill_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'Cost of last quarter bill?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
+            'String', 'Cost of last quarter bill ($)?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20);
         
     % Create button for display
@@ -886,7 +886,7 @@ function The_Solar_Solution_GUI()
 %% Number of People
 	% Create the related questions
         number_people_question = uicontrol('Units', 'normalized', 'Position',standard_question, 'Style', 'text',...
-            'String', 'How many occupants in the residence?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
+            'String', 'How many occupants are in the residence?', 'Visible', 'Off','Parent', TabHandles{prompt_page,1},...
             'Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 20);   
 
 	% Create persistent variables         
@@ -934,617 +934,613 @@ function The_Solar_Solution_GUI()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Tab 2 Content: INPUTS TAB %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Create solar question
+%% Create the UI Handles for the labels and Values on Input Page
     % Create tab reference for parent handles
-y_offset = -0.05;
-input_page = 2;
+        y_offset = -0.05;
+    % Set up page number for referencing
+        input_page = 2;
+    % Create the Labels for each value
+        solar_title = uicontrol('Units', 'normalized', 'Position',[0.3 0.9+y_offset 0.4 0.075], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Solar Parameter Inputs', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
 
-solar_title = uicontrol('Units', 'normalized', 'Position',[0.3 0.9+y_offset 0.4 0.075], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Solar Parameter Inputs', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Location', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Create the static text for labels
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Location', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        postal_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Post Code', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-postal_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Post Code', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        bill_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.6+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Bill $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-bill_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.6+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Bill $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        supplier_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Supplier', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-supplier_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Supplier', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        tariff_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Tariff', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-tariff_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Tariff', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        occupants_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', '# Occupants', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-occupants_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', '# Occupants', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        gas_main_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Gas Mains', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-gas_main_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Gas Mains', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        pool_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.1+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Pool Connected', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-pool_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.1+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Pool Connected', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+     % Create the edit boxes to update
+        state_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Create the edit update text inputs
-state_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        postal_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-postal_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        bill_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-bill_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        supplier_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-supplier_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        tariff_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-tariff_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        occupants_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.3+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-occupants_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.3+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        gas_main_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-gas_main_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        pool_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-pool_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    % Create the Labels for each value
+        system_title = uicontrol('Units', 'normalized', 'Position',[0.65 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'System Specifications', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Create the static text for labels
-system_title = uicontrol('Units', 'normalized', 'Position',[0.65 0.8+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'System Specifications', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 10);
+        solar_size_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Solar Size (kW)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-solar_size_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.7+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Solar size (kW)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        solar_cost_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.6+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Solar Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-solar_cost_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.6+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Solar Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        battery_size_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.5+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Battery Size (kWhr)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-battery_size_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.5+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Battery Size (kWhr)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        battery_cost_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', ' Battery Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-battery_cost_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.4+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', ' Battery Cost $', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        tilt_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Roof Tilt (Degrees)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-tilt_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.2+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Roof Tilt (Degrees)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+        orientation_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.1+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Roof Orientation', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-orientation_title = uicontrol('Units', 'normalized', 'Position',[0.55 0.1+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Roof Orientation', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 10);
+     % Create the edit boxes to update
+        solar_size_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Create the edit update text inputs
+        solar_cost_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-solar_size_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.7+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        battery_size_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-solar_cost_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.6+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        battery_cost_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-battery_size_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.5+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        roofspec_title = uicontrol('Units', 'normalized', 'Position',[0.65 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
+            'String', 'Roof Specifications', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 10);
 
-battery_cost_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.4+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        tilt_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-roofspec_title = uicontrol('Units', 'normalized', 'Position',[0.65 0.3+y_offset 0.15 0.05], 'Style', 'text','Parent', TabHandles{input_page,1},...
-    'String', 'Roof Specifications', 'Visible', 'On','Backgroundcolor', 'green', 'Foregroundcolor', 'black', 'FontSize', 10);
-
-tilt_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.2+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
-
-orientation_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        orientation_value = uicontrol('Units', 'normalized', 'Position',[0.75 0.1+y_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{input_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Tab 3 Content: PRODUCTION TAB %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Production tab
+%% Create the UI Handles for the labels and Values on Production Page
     % Create tab reference for parent handles
-y_prod_offset = 0.025;
-production_page = 3;
-
-% Estimated production list
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.875+y_prod_offset 0.35 0.07], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Estimated Daily Production', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
-
-% Create the static text for production
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Daily Usuage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.725+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Daily Solar Production', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.65+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+        y_prod_offset = 0.025;
         
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Total Exported', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-        
-% Edit boxes for production
-daily_usuage_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    % Set up page number for referencing
+        production_page = 3;
 
-daily_production_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    % Create the Labels for each value
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.875+y_prod_offset 0.35 0.07], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Estimated Daily Production (kWhr)', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
 
-daily_storage_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Daily Usuage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-daily_exported_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.725+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Daily Solar Production', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.65+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Daily Storage', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Total Exported', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
+     % Create the edit boxes to update
+        daily_usuage_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Estimated daily savings
-current_system = uicontrol('Units', 'normalized', 'Position',[0.575 0.875+y_prod_offset 0.375 0.07], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Daily Cost', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
+        daily_production_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
+        daily_storage_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Create the static text for cost per kw
-daily_normal_cost_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.8+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Standard', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+        daily_exported_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-daily_solar_cost_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.725+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Import', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+    % Create the Labels for each value
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.575 0.875+y_prod_offset 0.375 0.07], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Daily Cost ($)', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
 
-current_system = uicontrol('Units', 'normalized', 'Position',[0.575 0.65+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Export', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-        
-current_system = uicontrol('Units', 'normalized', 'Position',[0.575 0.575+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
-    'String', 'Actual Savings', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-        
-% Edit boxes for cost per kw
-daily_normal_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        daily_normal_cost_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.8+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Standard', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-daily_import_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        daily_solar_cost_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.725+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Import', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-daily_export_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.575 0.65+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Export', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-daily_savings_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.575 0.575+y_prod_offset 0.2 0.05], 'Style', 'text','Parent', TabHandles{production_page,1},...
+            'String', 'Actual Savings', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-% Calculation of PSH from tilt angle
-persistent kw_produced_daily
-persistent daily_savings
-persistent source_energy
-    function PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
-            ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)    
-                 
-        PSH_avg =  tilt_calculator (roof_tilt_input,13);
-%         disp('Peak Sun Hours');   
-%         disp(PSH_avg);   
-        
-        if bill_input == 0
-        kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
-        else 
-            kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
-            kwhr_avg_found = bill_input/(90*tariff_rate_normal_found)
-        end
-%         disp('Average Kilowatts Hours For Household'); 
-%         disp(kwhr_avg_found);   
-        
-       kw_produced_daily = solar_size_input *  PSH_avg * performance_input;
-       kwhr_used_from_solar = (10/percentage_input)*kw_produced_daily;
-       
-      % Need to find the calculations
-        daily_storage = battery_size_input;  
-      if ((battery_installed == 1) & (solar_installed == 0))
-          daily_exported = 0;
-      elseif ((battery_installed == 0) & (solar_installed == 0))
-            kw_produced_daily = 0;            
-      else         
-        daily_exported = (kw_produced_daily - kwhr_used_from_solar - daily_storage);
-      end
-      
-      daily_imported = (kwhr_avg_found - kwhr_used_from_solar - daily_storage);
-      daily_savings =   (kwhr_avg_found*tariff_rate_normal_found    -...
-                        (daily_imported*tariff_rate_normal_found - daily_exported*solar_rate_feedin_found));
-      
-      
-        Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tariff_rate_normal_found,daily_exported,daily_imported,daily_savings)
-         production_graph() 
-         cost_analysis(daily_savings)
-         finance_graph()
-         
-        % protects the pie graph aagainst non-positive data
-       if (daily_storage <= 0)
-           pie_storage = 0.00000000001;
-       else
-           pie_storage = daily_storage;
-       end
-        if (daily_imported <= 0)
-           daily_imported_pie = 0.00000000001;
-       else
-           daily_imported_pie = daily_imported;
-       end
-       
-        source_energy = [kwhr_used_from_solar    pie_storage    daily_imported_pie]/...
-            (kwhr_used_from_solar + pie_storage + daily_imported_pie);
-        disp(source_energy(1,1));disp(source_energy(1,2));disp(source_energy(1,3));
-  
-        % Pie chart
-         haxes_pie = axes('Parent', TabHandles{display_page,1}, ...
-                                    'Units', 'normalized', ...
-                                    'Position', [0.7 0.665 0.3 0.3]);              
-        pie_face = pie(haxes_pie,source_energy);
-        title(haxes_pie,'Daily Energy Sources');
-         jooda  = pie_face(1); jooda.FaceColor = 'green'; jooda  = pie_face(2); jooda .FontSize = 12;
-         jooda  = pie_face(3); jooda.FaceColor = 'yellow'; jooda  = pie_face(4); jooda .FontSize = 10;
-         jooda  = pie_face(5); jooda.FaceColor = 'red'; jooda  = pie_face(6); jooda .FontSize = 10;  
-         %         jooda .BackgroundColor = 'green';
-            hText = findobj(pie_face,'Type','text'); % text object handles
-            percentValues = get(hText,'String'); % percent values
-            energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
-            combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
-            oldExtents_cell = get(hText,'Extent'); % cell array
-            oldExtents = cell2mat(oldExtents_cell); % numeric array
-            hText(1).String = combinedtxt(1);
-            hText(2).String = combinedtxt(2);
-            hText(3).String = combinedtxt(3);
-            newExtents_cell = get(hText,'Extent'); % cell array
-            newExtents = cell2mat(newExtents_cell); % numeric array 
-            width_change = newExtents(:,3)-oldExtents(:,3);
-            signValues = sign(oldExtents(:,1));
-            offset = signValues.*(width_change/2);
-            textPositions_cell = get(hText,{'Position'}); % cell array
-            textPositions = cell2mat(textPositions_cell); % numeric array
-            textPositions(:,1) = textPositions(:,1) + offset; % add offset 
-            hText(1).Position = textPositions(1,:);
-            hText(2).Position = textPositions(2,:);
-            hText(3).Position = textPositions(3,:);
-   
-            
-                    % Pie chart
-         haxes_pie8 = axes('Parent', TabHandles{8,1}, ...
-                                    'Units', 'normalized', ...
-                                    'Position', [0.05 0.1 0.9 0.75]);              
-        pie_face8 = pie(haxes_pie8,source_energy);
-        title(haxes_pie8,'Daily Energy Sources');
-        set(gca,'fontsize',20)
-         jooda  = pie_face8(1); jooda.FaceColor = 'green'; jooda  = pie_face8(2); jooda .FontSize = 16;
-         jooda  = pie_face8(3); jooda.FaceColor = 'yellow'; jooda  = pie_face8(4); jooda .FontSize = 16;
-         jooda  = pie_face8(5); jooda.FaceColor = 'red'; jooda  = pie_face8(6); jooda .FontSize = 16;  
-         %         jooda .BackgroundColor = 'green';
-            hText = findobj(pie_face8,'Type','text'); % text object handles
-            percentValues = get(hText,'String'); % percent values
-            energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
-            combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
-            oldExtents_cell = get(hText,'Extent'); % cell array
-            oldExtents = cell2mat(oldExtents_cell); % numeric array
-            hText(1).String = combinedtxt(1);
-            hText(2).String = combinedtxt(2);
-            hText(3).String = combinedtxt(3);
-            newExtents_cell = get(hText,'Extent'); % cell array
-            newExtents = cell2mat(newExtents_cell); % numeric array 
-            width_change = newExtents(:,3)-oldExtents(:,3);
-            signValues = sign(oldExtents(:,1));
-            offset = signValues.*(width_change/2);
-            textPositions_cell = get(hText,{'Position'}); % cell array
-            textPositions = cell2mat(textPositions_cell); % numeric array
-            textPositions(:,1) = textPositions(:,1) + offset; % add offset 
-            hText(1).Position = textPositions(1,:);
-            hText(2).Position = textPositions(2,:);
-            hText(3).Position = textPositions(3,:);
-         
-    end
+     % Create the edit boxes to update
+        daily_normal_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-% Function for findin the liner change between nasa data
-    function [PSH_avg] =  tilt_calculator (roof_tilt_input,month)
-        psh_row_index = 0;
-        month = month + 1;
-                switch state_input
-                        case 4814                        
-                        case 4825
-                            psh_row_index =  5;
-                        case 0800
-                             psh_row_index =  10;
-                        case 6000
-                            psh_row_index =  15;
-                        case 3000
-                             psh_row_index =  20;
-                        case 7000
-                            psh_row_index =  25;
-                        case 2000
-                             psh_row_index =  30;
-                       case 4000
-                             psh_row_index =  35; 
-                end   
-                max_tilt0 = solar_psh_data(psh_row_index+1,1);
-                max_tilt1 = solar_psh_data(psh_row_index+2,1);
-                max_tilt2 = solar_psh_data(psh_row_index+3,1);
-                max_tilt3 = solar_psh_data(psh_row_index+4,1);
-                max_tilt4 = solar_psh_data(psh_row_index+5,1);
-                    
-                if  ((roof_tilt_input >= max_tilt0) & (roof_tilt_input <= max_tilt1))
-                    max_tilt = max_tilt1;                      min_tilt = max_tilt0;
-                    max_psh = solar_psh_data(2+psh_row_index,month);     min_psh = solar_psh_data(1+psh_row_index,month);
-               elseif ((roof_tilt_input > max_tilt1) & (roof_tilt_input <= max_tilt2))
-                    max_tilt = max_tilt2;                      min_tilt = max_tilt1;                
-                    max_psh = solar_psh_data(3+psh_row_index,month);     min_psh = solar_psh_data(2+psh_row_index,month);
-               elseif ((roof_tilt_input > max_tilt2) & (roof_tilt_input <= max_tilt3))
-                    max_tilt = max_tilt3;                      min_tilt = max_tilt2;              
-                    max_psh = solar_psh_data(4+psh_row_index,month);     min_psh = solar_psh_data(3+psh_row_index,month);
-               elseif ((roof_tilt_input> max_tilt3) & (roof_tilt_input <= max_tilt4))
-                    max_tilt = max_tilt4;                      min_tilt = max_tilt3;            
-                    max_psh = solar_psh_data(5+psh_row_index,month);     min_psh = solar_psh_data(4+psh_row_index,month);
+        daily_import_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+        daily_export_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+        daily_savings_cost_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{production_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+    % Calculation of PSH from tilt angle
+        persistent kw_produced_daily
+        persistent daily_savings
+        persistent source_energy
+            function PSH_and_KW_Calc(solar_size_input,performance_input, roof_tilt_input,state_input...
+                    ,number_people_input,gas_mains_input, pool_input, battery_size_input, solar_installed, battery_installed)    
+
+                PSH_avg =  tilt_calculator (roof_tilt_input,13);
+        %         disp('Peak Sun Hours');   
+        %         disp(PSH_avg);   
+
+                if bill_input == 0
+                kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
+                else 
+                    kwhr_avg_found = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)    ;   
+                    kwhr_avg_found = bill_input/(90*tariff_rate_normal_found)
                 end
-                
-                div_step = (max_psh - min_psh)/(max_tilt-min_tilt);
-                tilt_offset = (roof_tilt_input - min_tilt) * div_step ;
-                PSH_avg =  tilt_offset + min_psh;
-                
-                
-    end
+        %         disp('Average Kilowatts Hours For Household'); 
+        %         disp(kwhr_avg_found);   
+
+               kw_produced_daily = solar_size_input *  PSH_avg * performance_input;
+               kwhr_used_from_solar = (10/percentage_input)*kw_produced_daily;
+
+              % Need to find the calculations
+                daily_storage = battery_size_input;  
+              if ((battery_installed == 1) & (solar_installed == 0))
+                  daily_exported = 0;
+              elseif ((battery_installed == 0) & (solar_installed == 0))
+                    kw_produced_daily = 0;            
+              else         
+                daily_exported = (kw_produced_daily - kwhr_used_from_solar - daily_storage);
+              end
+
+              daily_imported = (kwhr_avg_found - kwhr_used_from_solar - daily_storage);
+              daily_savings =   (kwhr_avg_found*tariff_rate_normal_found    -...
+                                (daily_imported*tariff_rate_normal_found - daily_exported*solar_rate_feedin_found));
+
+
+                Update_Values_prod(kwhr_avg_found,kw_produced_daily,daily_storage,tariff_rate_normal_found,daily_exported,daily_imported,daily_savings)
+                 production_graph() 
+                 cost_analysis(daily_savings)
+                 finance_graph()
+
+                % protects the pie graph aagainst non-positive data
+               if (daily_storage <= 0)
+                   pie_storage = 0.00000000001;
+               else
+                   pie_storage = daily_storage;
+               end
+                if (daily_imported <= 0)
+                   daily_imported_pie = 0.00000000001;
+               else
+                   daily_imported_pie = daily_imported;
+               end
+
+                source_energy = [kwhr_used_from_solar    pie_storage    daily_imported_pie]/...
+                    (kwhr_used_from_solar + pie_storage + daily_imported_pie);
+                disp(source_energy(1,1));disp(source_energy(1,2));disp(source_energy(1,3));
+
+                % Pie chart
+                 haxes_pie = axes('Parent', TabHandles{display_page,1}, ...
+                                            'Units', 'normalized', ...
+                                            'Position', [0.7 0.665 0.3 0.3]);              
+                pie_face = pie(haxes_pie,source_energy);
+                title(haxes_pie,'Daily Energy Sources');
+                 jooda  = pie_face(1); jooda.FaceColor = 'green'; jooda  = pie_face(2); jooda .FontSize = 12;
+                 jooda  = pie_face(3); jooda.FaceColor = 'yellow'; jooda  = pie_face(4); jooda .FontSize = 10;
+                 jooda  = pie_face(5); jooda.FaceColor = 'red'; jooda  = pie_face(6); jooda .FontSize = 10;  
+                 %         jooda .BackgroundColor = 'green';
+                    hText = findobj(pie_face,'Type','text'); % text object handles
+                    percentValues = get(hText,'String'); % percent values
+                    energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
+                    combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
+                    oldExtents_cell = get(hText,'Extent'); % cell array
+                    oldExtents = cell2mat(oldExtents_cell); % numeric array
+                    hText(1).String = combinedtxt(1);
+                    hText(2).String = combinedtxt(2);
+                    hText(3).String = combinedtxt(3);
+                    newExtents_cell = get(hText,'Extent'); % cell array
+                    newExtents = cell2mat(newExtents_cell); % numeric array 
+                    width_change = newExtents(:,3)-oldExtents(:,3);
+                    signValues = sign(oldExtents(:,1));
+                    offset = signValues.*(width_change/2);
+                    textPositions_cell = get(hText,{'Position'}); % cell array
+                    textPositions = cell2mat(textPositions_cell); % numeric array
+                    textPositions(:,1) = textPositions(:,1) + offset; % add offset 
+                    hText(1).Position = textPositions(1,:);
+                    hText(2).Position = textPositions(2,:);
+                    hText(3).Position = textPositions(3,:);
+
+
+                            % Pie chart
+                 haxes_pie8 = axes('Parent', TabHandles{8,1}, ...
+                                            'Units', 'normalized', ...
+                                            'Position', [0.05 0.1 0.9 0.75]);              
+                pie_face8 = pie(haxes_pie8,source_energy);
+                title(haxes_pie8,'Daily Energy Sources');
+                set(gca,'fontsize',20)
+                 jooda  = pie_face8(1); jooda.FaceColor = 'green'; jooda  = pie_face8(2); jooda .FontSize = 16;
+                 jooda  = pie_face8(3); jooda.FaceColor = 'yellow'; jooda  = pie_face8(4); jooda .FontSize = 16;
+                 jooda  = pie_face8(5); jooda.FaceColor = 'red'; jooda  = pie_face8(6); jooda .FontSize = 16;  
+                 %         jooda .BackgroundColor = 'green';
+                    hText = findobj(pie_face8,'Type','text'); % text object handles
+                    percentValues = get(hText,'String'); % percent values
+                    energy_sources = {'Solar offset: ';'Battery offset: ';'Grid Imports: '};
+                    combinedtxt = strcat(energy_sources,percentValues); % strings and percent values
+                    oldExtents_cell = get(hText,'Extent'); % cell array
+                    oldExtents = cell2mat(oldExtents_cell); % numeric array
+                    hText(1).String = combinedtxt(1);
+                    hText(2).String = combinedtxt(2);
+                    hText(3).String = combinedtxt(3);
+                    newExtents_cell = get(hText,'Extent'); % cell array
+                    newExtents = cell2mat(newExtents_cell); % numeric array 
+                    width_change = newExtents(:,3)-oldExtents(:,3);
+                    signValues = sign(oldExtents(:,1));
+                    offset = signValues.*(width_change/2);
+                    textPositions_cell = get(hText,{'Position'}); % cell array
+                    textPositions = cell2mat(textPositions_cell); % numeric array
+                    textPositions(:,1) = textPositions(:,1) + offset; % add offset 
+                    hText(1).Position = textPositions(1,:);
+                    hText(2).Position = textPositions(2,:);
+                    hText(3).Position = textPositions(3,:);
+
+            end
+
+        % Function for findin the liner change between nasa data
+            function [PSH_avg] =  tilt_calculator (roof_tilt_input,month)
+                psh_row_index = 0;
+                month = month + 1;
+                        switch state_input
+                                case 4814                        
+                                case 4825
+                                    psh_row_index =  5;
+                                case 0800
+                                     psh_row_index =  10;
+                                case 6000
+                                    psh_row_index =  15;
+                                case 3000
+                                     psh_row_index =  20;
+                                case 7000
+                                    psh_row_index =  25;
+                                case 2000
+                                     psh_row_index =  30;
+                               case 4000
+                                     psh_row_index =  35; 
+                        end   
+                        max_tilt0 = solar_psh_data(psh_row_index+1,1);
+                        max_tilt1 = solar_psh_data(psh_row_index+2,1);
+                        max_tilt2 = solar_psh_data(psh_row_index+3,1);
+                        max_tilt3 = solar_psh_data(psh_row_index+4,1);
+                        max_tilt4 = solar_psh_data(psh_row_index+5,1);
+
+                        if  ((roof_tilt_input >= max_tilt0) & (roof_tilt_input <= max_tilt1))
+                            max_tilt = max_tilt1;                      min_tilt = max_tilt0;
+                            max_psh = solar_psh_data(2+psh_row_index,month);     min_psh = solar_psh_data(1+psh_row_index,month);
+                       elseif ((roof_tilt_input > max_tilt1) & (roof_tilt_input <= max_tilt2))
+                            max_tilt = max_tilt2;                      min_tilt = max_tilt1;                
+                            max_psh = solar_psh_data(3+psh_row_index,month);     min_psh = solar_psh_data(2+psh_row_index,month);
+                       elseif ((roof_tilt_input > max_tilt2) & (roof_tilt_input <= max_tilt3))
+                            max_tilt = max_tilt3;                      min_tilt = max_tilt2;              
+                            max_psh = solar_psh_data(4+psh_row_index,month);     min_psh = solar_psh_data(3+psh_row_index,month);
+                       elseif ((roof_tilt_input> max_tilt3) & (roof_tilt_input <= max_tilt4))
+                            max_tilt = max_tilt4;                      min_tilt = max_tilt3;            
+                            max_psh = solar_psh_data(5+psh_row_index,month);     min_psh = solar_psh_data(4+psh_row_index,month);
+                        end
+
+                        div_step = (max_psh - min_psh)/(max_tilt-min_tilt);
+                        tilt_offset = (roof_tilt_input - min_tilt) * div_step ;
+                        PSH_avg =  tilt_offset + min_psh;
+
+
+            end
 
 
 
-    function production_graph()
+            function production_graph()
 
-                    % Create axis for graph
-                    %   Plot a sine function
-                        PlotOffset = 40;
-                        haxes2 = axes('Parent', TabHandles{production_page,1}, ...
-                            'Units', 'normalized', ...
-                               'Position', [0.075 0.1 0.9 0.45]);
-       
-            month_name = ({'Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';'Average'});         
-        
-        for i = 1:1:13
-                        kw_produced_daily_plot = solar_size_input *  tilt_calculator (roof_tilt_input,i) * performance_input;
-                        bar_data_plot(1,i) =  kw_produced_daily_plot;
-                        hold all
-        end
-        
-        bar(haxes2,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                            % Create axis for graph
+                            %   Plot a sine function
+                                PlotOffset = 40;
+                                haxes2 = axes('Parent', TabHandles{production_page,1}, ...
+                                    'Units', 'normalized', ...
+                                       'Position', [0.075 0.1 0.9 0.45]);
 
-        set(gca, 'XTick', 1:13,'xticklabel',month_name)
-        
-                        % Label, Dimension and Legent the GRPAH
-                title('Monthly Average kWhr Production','Color','yellow','FontSize', 13);
-                xlabel('Month');                      ylabel('Production (kWhr)');  
-                % legend({'RAW Signal'});
-                set(gca, ...
-                  'Box'         , 'off'     , ...
-                  'TickDir'     , 'out'     , ...
-                  'TickLength'  , [.01 .01] , ...
-                  'XMinorTick'  , 'on'      , ...
-                  'YMinorTick'  , 'on'      , ...
-                  'YGrid'       , 'on'      , ...
-                  'XGrid'       , 'off'      , ...
-                  'Color',Grey, 'FontSize', 13,...           
-                  'XColor'      , 'yellow', ...
-                  'YColor'      , 'yellow', ...
-                  'LineWidth'   , 3         );
-                % End of Graph Labelling
-                
-                % Create graph on another tab
+                    month_name = ({'Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';'Average'});         
 
-                      haxes6 = axes('Parent', TabHandles{6,1}, ...
-                            'Units', 'normalized', ...
-                            'Position', [0.075 0.15 0.9 0.75]);     
-                bar(haxes6,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                for i = 1:1:13
+                                kw_produced_daily_plot = solar_size_input *  tilt_calculator (roof_tilt_input,i) * performance_input;
+                                bar_data_plot(1,i) =  kw_produced_daily_plot;
+                                hold all
+                end
+
+                bar(haxes2,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+
                 set(gca, 'XTick', 1:13,'xticklabel',month_name)
-                             title('Monthly Average kWhr Production','Color','black','FontSize', 13);
-                xlabel('Month');                      ylabel('Production (kWhr)');  
-               ylim([0 30]);
-                % legend({'RAW Signal'});
-                set(gca, ...
-                  'Box'         , 'off'     , ...
-                  'TickDir'     , 'out'     , ...
-                  'TickLength'  , [.01 .01] , ...
-                  'XMinorTick'  , 'on'      , ...
-                  'YMinorTick'  , 'on'      , ...
-                  'YGrid'       , 'on'      , ...
-                  'XGrid'       , 'off'      , ...
-                  'Color','white', 'FontSize', 13,...           
-                  'XColor'      , 'black', ...
-                  'YColor'      , 'black', ...
-                  'LineWidth'   , 3         );
-                % End of Graph Labelling   
-    end
+
+                                % Label, Dimension and Legent the GRPAH
+                        title('Monthly Average kWhr Production','Color','yellow','FontSize', 13);
+                        xlabel('Month');                      ylabel('Production (kWhr)');  
+                        % legend({'RAW Signal'});
+                        set(gca, ...
+                          'Box'         , 'off'     , ...
+                          'TickDir'     , 'out'     , ...
+                          'TickLength'  , [.01 .01] , ...
+                          'XMinorTick'  , 'on'      , ...
+                          'YMinorTick'  , 'on'      , ...
+                          'YGrid'       , 'on'      , ...
+                          'XGrid'       , 'off'      , ...
+                          'Color',Grey, 'FontSize', 13,...           
+                          'XColor'      , 'yellow', ...
+                          'YColor'      , 'yellow', ...
+                          'LineWidth'   , 3         );
+                        % End of Graph Labelling
+
+                        % Create graph on another tab
+
+                              haxes6 = axes('Parent', TabHandles{6,1}, ...
+                                    'Units', 'normalized', ...
+                                    'Position', [0.075 0.15 0.9 0.75]);     
+                        bar(haxes6,bar_data_plot,'FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                        set(gca, 'XTick', 1:13,'xticklabel',month_name)
+                                     title('Monthly Average kWhr Production','Color','black','FontSize', 13);
+                        xlabel('Month');                      ylabel('Production (kWhr)');  
+                       ylim([0 30]);
+                        % legend({'RAW Signal'});
+                        set(gca, ...
+                          'Box'         , 'off'     , ...
+                          'TickDir'     , 'out'     , ...
+                          'TickLength'  , [.01 .01] , ...
+                          'XMinorTick'  , 'on'      , ...
+                          'YMinorTick'  , 'on'      , ...
+                          'YGrid'       , 'on'      , ...
+                          'XGrid'       , 'off'      , ...
+                          'Color','white', 'FontSize', 13,...           
+                          'XColor'      , 'black', ...
+                          'YColor'      , 'black', ...
+                          'LineWidth'   , 3         );
+                        % End of Graph Labelling   
+            end
 
 
-% Values for Taffifs
- persistent tariff_found
- persistent tariff_rate_normal_found
- persistent solar_rate_feedin_found
- persistent kwhr_avg_found
-    function [kwhr_avg_found] = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)
-                column = 5;
-                row = 1;
-        switch state_input
-                        case 4814                        
-                        case 4825
-                            row = row + 16;
-                        case 0800
-                             row = row + 32;
-                        case 6000
-                            row = row + 48;
-                        case 3000
-                             row = row + 64;
-                        case 7000
-                            row = row + 80;
-                        case 2000
-                             row = row + 96;
-                       case 4000
-                             row = row + 112; 
-                    end                            
-        
-                    switch number_people_input
-                        case 3
-                            row = row +4;
-                        case 2
-                            row = row +8;
-                        case 1
-                            row = row +12;
-                    end
+        % Values for Taffifs
+         persistent tariff_found
+         persistent tariff_rate_normal_found
+         persistent solar_rate_feedin_found
+         persistent kwhr_avg_found
+            function [kwhr_avg_found] = average_kwhr_finder(state_input,number_people_input,gas_mains_input, pool_input)
+                        column = 5;
+                        row = 1;
+                switch state_input
+                                case 4814                        
+                                case 4825
+                                    row = row + 16;
+                                case 0800
+                                     row = row + 32;
+                                case 6000
+                                    row = row + 48;
+                                case 3000
+                                     row = row + 64;
+                                case 7000
+                                    row = row + 80;
+                                case 2000
+                                     row = row + 96;
+                               case 4000
+                                     row = row + 112; 
+                            end                            
 
-                       switch pool_input                     
-                        case 1
-                            row = row +2;
-                       end
-                       
-                       switch gas_mains_input
-                        case 1
-                            row = row +1;
-                       end
-                       
-              kwhr_avg_found = kwhr_avg_data(row,column);  
-              tariff_found = kwhr_avg_data(row,column+2);
-              tariff_rate_normal_found = kwhr_avg_data(row,column+3);
-              solar_rate_feedin_found = kwhr_avg_data(row,column+4);
-    end
+                            switch number_people_input
+                                case 3
+                                    row = row +4;
+                                case 2
+                                    row = row +8;
+                                case 1
+                                    row = row +12;
+                            end
+
+                               switch pool_input                     
+                                case 1
+                                    row = row +2;
+                               end
+
+                               switch gas_mains_input
+                                case 1
+                                    row = row +1;
+                               end
+
+                      kwhr_avg_found = kwhr_avg_data(row,column);  
+                      tariff_found = kwhr_avg_data(row,column+2);
+                      tariff_rate_normal_found = kwhr_avg_data(row,column+3);
+                      solar_rate_feedin_found = kwhr_avg_data(row,column+4);
+            end
         
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         %%   Tab 4 Content: FINANCE TAB %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Savings and Finance
+%% Create the UI Handles for the labels and Values on Finance Page
     % Create tab reference for parent handles
-y_finance_offset = 0.025;
-finance_page = 4;
-
-% Estimated production list
-current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.875+y_prod_offset 0.35 0.07], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'Finance Options', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
-
-% Create the static text for production
-ALCC_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'ALCC $/kWhr', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-
-ANNPMT_opt_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.725+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'ANNPMT Optimistic', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-
-ANNPMT_likely_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.65+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'ANNPMT Likely', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+        y_finance_offset = 0.025;
         
-ANNPMT_pess_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'ANNPMT Pessimistic', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-   
-ROI_title = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_prod_offset 0.15/2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'ROI%', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-IRR_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_prod_offset 0.175/2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'IRR%', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
-     
+    % Set up page number for referencing        
+        finance_page = 4;
 
-% Edit boxes for production
-ALCC_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+    % Create the Labels for each value
+        current_system = uicontrol('Units', 'normalized', 'Position',[0.1 0.875+y_prod_offset 0.35 0.07], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'Finance Options ($/kWhr)', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
 
-ANNPMT_opt_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        ALCC_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.8+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'ALCC $/kWhr', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-ANNPMT_likely_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        ANNPMT_opt_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.725+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'ANNPMT Optimistic', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-ANNPMT_pess_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        ANNPMT_likely_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.65+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'ANNPMT Likely', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-ROI_value = uicontrol('Units', 'normalized', 'Position',[0.3+(0.15/2) 0.5+y_prod_offset 0.15/2 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
-IRR_value = uicontrol('Units', 'normalized', 'Position',[0.1+0.175/2 0.5+y_prod_offset 0.175/2 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
-    'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        ANNPMT_pess_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.575+y_prod_offset 0.175 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'ANNPMT Pessimistic', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
 
-
-persistent bar_data_finance
-persistent yearly_savings_adj_infla
-    function finance_graph()
-        % Create axis for graph
-            %   Plot a sine function
-                PlotOffset = 40;
-                haxes3 = axes('Parent', TabHandles{finance_page,1}, ...
-                    'Units', 'normalized', ...
-                    'Position', [0.075 0.1 0.9 0.35]);
-                 
-                yearly_cost_plot =  kwhr_avg_found*tariff_rate_normal_found*365;
-                yearly_cost_witsol_plot = yearly_cost_plot - daily_savings*365;
-
-        for i = 1:1:20 
-
-                            if ((i == 10) & (battery_installed == 1))
-                            bar_data_finance(1,i) = (yearly_cost_witsol_plot + cost_battery_input*(1+inflation_rate)^i); %no future value of money i   ;                              
-%                             bar_data_finance(1,i) = (yearly_cost_plot + yearly_cost_witsol_plot);  
-                            else
-                            bar_data_finance(2,i) = yearly_cost_plot;       
-                            bar_data_finance(1,i) = yearly_cost_witsol_plot;
-                            end
-                            
-                       yearly_cost_plot = yearly_cost_plot *(1+inflation_rate);
-                       yearly_cost_witsol_plot = yearly_cost_witsol_plot * (1+inflation_rate);
-
-        end 
-        
-        % added in for when you make money with solar
-              if     (yearly_cost_witsol_plot > 0) 
-                     buddy = bar(haxes3,bar_data_finance','stacked','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
-              else      
-                  buddy = bar(haxes3,bar_data_finance','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
-              end
-                     buddy(2).FaceColor = [.9 .1 .1];
-
-                % Label, Dimension and Legent the GRPAH
-        title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','yellow','FontSize', 16);
-        xlabel('Years','FontSize', 16);                      ylabel('Cost ($AUD)','FontSize', 16);          
-         xlim([0, 21]);  
-%          ylim([0, 30]);
-         legend({'Solar/Battery','Normal'},'Location','northwest');
-        set(gca, ...
-          'Box'         , 'off'     , ...
-          'TickDir'     , 'out'     , ...
-          'TickLength'  , [.01 .01] , ...
-          'XMinorTick'  , 'on'      , ...
-          'YMinorTick'  , 'on'      , ...
-          'YGrid'       , 'off'      , ...
-          'XGrid'       , 'on'      , ...
-         'Color',Grey, 'FontSize', 13,...      
-          'XColor'      , 'yellow', ...
-          'YColor'      , 'yellow', ...
-          'LineWidth'   , 2         );
-        % End of Graph Labelling
+        ROI_title = uicontrol('Units', 'normalized', 'Position',[0.3 0.5+y_prod_offset 0.15/2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'ROI%', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
        
-                    haxes7 = axes('Parent', TabHandles{7,1}, ...
-                    'Units', 'normalized', ...
-                    'Position', [0.08 0.15 0.9 0.75]);
-                
-        % added in for when you make money with solar
-              if     (yearly_cost_witsol_plot > 0) 
-                     buddy7 = bar(haxes7,bar_data_finance','stacked','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
-              else      
-                  buddy7 = bar(haxes7,bar_data_finance','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
-              end
-                     buddy7(2).FaceColor = [.9 .1 .1];
+        IRR_title = uicontrol('Units', 'normalized', 'Position',[0.1 0.5+y_prod_offset 0.175/2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
+            'String', 'IRR%', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+
+     % Create the edit boxes to update
+        ALCC_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.8+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+        ANNPMT_opt_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.725+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+        ANNPMT_likely_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.65+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+        ANNPMT_pess_value = uicontrol('Units', 'normalized', 'Position',[0.3 0.575+y_prod_offset 0.15 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+        ROI_value = uicontrol('Units', 'normalized', 'Position',[0.3+(0.15/2) 0.5+y_prod_offset 0.15/2 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+        IRR_value = uicontrol('Units', 'normalized', 'Position',[0.1+0.175/2 0.5+y_prod_offset 0.175/2 0.05], 'Style', 'edit','Parent', TabHandles{finance_page,1},...
+            'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
+
+
+    persistent bar_data_finance
+    persistent yearly_savings_adj_infla
+        function finance_graph()
+            % Create axis for graph
+                %   Plot a sine function
+                    PlotOffset = 40;
+                    haxes3 = axes('Parent', TabHandles{finance_page,1}, ...
+                        'Units', 'normalized', ...
+                        'Position', [0.075 0.1 0.9 0.35]);
+
+                    yearly_cost_plot =  kwhr_avg_found*tariff_rate_normal_found*365;
+                    yearly_cost_witsol_plot = yearly_cost_plot - daily_savings*365;
+
+            for i = 1:1:20 
+
+                                if ((i == 10) & (battery_installed == 1))
+                                bar_data_finance(1,i) = (yearly_cost_witsol_plot + cost_battery_input*(1+inflation_rate)^i); %no future value of money i   ;                              
+    %                             bar_data_finance(1,i) = (yearly_cost_plot + yearly_cost_witsol_plot);  
+                                else
+                                bar_data_finance(2,i) = yearly_cost_plot;       
+                                bar_data_finance(1,i) = yearly_cost_witsol_plot;
+                                end
+
+                           yearly_cost_plot = yearly_cost_plot *(1+inflation_rate);
+                           yearly_cost_witsol_plot = yearly_cost_witsol_plot * (1+inflation_rate);
+
+            end 
+
+            % added in for when you make money with solar
+                  if     (yearly_cost_witsol_plot > 0) 
+                         buddy = bar(haxes3,bar_data_finance','stacked','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                  else      
+                      buddy = bar(haxes3,bar_data_finance','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                  end
+                         buddy(2).FaceColor = [.9 .1 .1];
+
                     % Label, Dimension and Legent the GRPAH
-        title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','black','FontSize', 16);
-        xlabel('Years','FontSize', 16);                      ylabel('Cost ($AUD)','FontSize', 16);          
-         xlim([0, 21]);  
-%          ylim([0, 30]);
-         legend({'Solar/Battery','Normal'},'Location','northwest');
-        set(gca, ...
-          'Box'         , 'off'     , ...
-          'TickDir'     , 'out'     , ...
-          'TickLength'  , [.01 .01] , ...
-          'XMinorTick'  , 'on'      , ...
-          'YMinorTick'  , 'on'      , ...
-          'YGrid'       , 'off'      , ...
-          'XGrid'       , 'on'      , ...
-         'Color','white', 'FontSize', 13,...      
-          'XColor'      , 'black', ...
-          'YColor'      , 'black', ...
-          'LineWidth'   , 2         );
-        % End of Graph Labelling    
+            title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','yellow','FontSize', 16);
+            xlabel('Years','FontSize', 16);                      ylabel('Cost ($AUD)','FontSize', 16);          
+             xlim([0, 21]);  
+    %          ylim([0, 30]);
+             legend({'Solar/Battery','Normal'},'Location','northwest');
+            set(gca, ...
+              'Box'         , 'off'     , ...
+              'TickDir'     , 'out'     , ...
+              'TickLength'  , [.01 .01] , ...
+              'XMinorTick'  , 'on'      , ...
+              'YMinorTick'  , 'on'      , ...
+              'YGrid'       , 'off'      , ...
+              'XGrid'       , 'on'      , ...
+             'Color',Grey, 'FontSize', 13,...      
+              'XColor'      , 'yellow', ...
+              'YColor'      , 'yellow', ...
+              'LineWidth'   , 2         );
+            % End of Graph Labelling
+
+                        haxes7 = axes('Parent', TabHandles{7,1}, ...
+                        'Units', 'normalized', ...
+                        'Position', [0.08 0.15 0.9 0.75]);
+
+            % added in for when you make money with solar
+                  if     (yearly_cost_witsol_plot > 0) 
+                         buddy7 = bar(haxes7,bar_data_finance','stacked','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                  else      
+                      buddy7 = bar(haxes7,bar_data_finance','FaceColor',[0 .8 .5],'EdgeColor','yellow','LineWidth',1.5);
+                  end
+                         buddy7(2).FaceColor = [.9 .1 .1];
+                        % Label, Dimension and Legent the GRPAH
+            title('Yearly Cost of Electricity Comparison Between Normal Vs. Solar/Battery','Color','black','FontSize', 16);
+            xlabel('Years','FontSize', 16);                      ylabel('Cost ($AUD)','FontSize', 16);          
+             xlim([0, 21]);  
+    %          ylim([0, 30]);
+             legend({'Solar/Battery','Normal'},'Location','northwest');
+            set(gca, ...
+              'Box'         , 'off'     , ...
+              'TickDir'     , 'out'     , ...
+              'TickLength'  , [.01 .01] , ...
+              'XMinorTick'  , 'on'      , ...
+              'YMinorTick'  , 'on'      , ...
+              'YGrid'       , 'off'      , ...
+              'XGrid'       , 'on'      , ...
+             'Color','white', 'FontSize', 13,...      
+              'XColor'      , 'black', ...
+              'YColor'      , 'black', ...
+              'LineWidth'   , 2         );
+            % End of Graph Labelling    
 
         
         
-    end
+        end
 % Estimated daily savings
 savings_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.875+y_prod_offset 0.375 0.07], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'Expected Savings', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
+    'String', 'Expected Savings ($)', 'Visible', 'On','Backgroundcolor',[0.5 1 0], 'Foregroundcolor', 'black', 'FontSize', 20);
 
 
 % Create the static text for cost per kw
@@ -1561,7 +1557,7 @@ twen_year_saving_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.57
     'String', '20 Year Period', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
         
 payback_period_title = uicontrol('Units', 'normalized', 'Position',[0.575 0.5+y_prod_offset 0.2/2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
-    'String', 'Payback', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
+    'String', 'Payback (yr)', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
         
 NPV_title = uicontrol('Units', 'normalized', 'Position',[0.8 0.5+y_prod_offset 0.15/2 0.05], 'Style', 'text','Parent', TabHandles{finance_page,1},...
     'String', 'NPV', 'Visible', 'On','Backgroundcolor', 'yellow', 'Foregroundcolor', 'black', 'FontSize', 15);
@@ -1636,7 +1632,9 @@ disp_imported_title = uicontrol('Units', 'normalized', 'Position',[0.725 0.43+y_
 disp_imported_value = uicontrol('Units', 'normalized', 'Position',[0.8 0.43+y_prod_offset 0.07 0.05], 'Style', 'edit','Parent', TabHandles{display_page,1},...
     'String', '-', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);
 
-                      
+     % Create units box
+disp_imported_title = uicontrol('Units', 'normalized', 'Position',[0. 0.96 0.07 0.04], 'Style', 'text','Parent', TabHandles{display_page,1},...
+    'String', 'Units - kWhr', 'Visible', 'On','Backgroundcolor', Grey, 'Foregroundcolor', 'black', 'FontSize', 10);                 
 
 
 
@@ -1958,9 +1956,9 @@ end
                     number_people_input = 3;            set(occupants_value, 'String', num2str(number_people_input))
 
                     %%% Change state
-                    state_input =  4814;    
+                    state_input =  7000;    
                     % Change Roof tilt
-                    roof_tilt_input = 19; 
+                    roof_tilt_input = 12; 
 
                     set(tilt_value, 'String', num2str(roof_tilt_input) ) 
                     set(state_value, 'String', 'QLD') ; 
