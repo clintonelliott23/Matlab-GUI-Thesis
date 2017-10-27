@@ -233,7 +233,7 @@ function The_Solar_Solution_GUI()
                     pool_input = 1
                     set(pool_value, 'String', 'Yes')
                     else
-                     set(pool_value, 'String', 'NO')
+                     set(pool_value, 'String', 'No')
                      pool_input = 0   
                     end    
                 set(solar_size_value, 'String', '0') 
@@ -490,7 +490,7 @@ function The_Solar_Solution_GUI()
 
  
     % Dropdown list
-        KWHR_battery_size = [1 2 4 6 8 12];
+        KWHR_battery_size = [1 2 4 6 8 10 12];
 
     % Set up pop up menu with pulldown data
         KWHR_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
@@ -538,7 +538,7 @@ function The_Solar_Solution_GUI()
         end
 
     % Dropdown list
-        battery_cost_list = [3000 4000 5000 6000 7000 8000 9000 10000];
+        battery_cost_list = [3000 4000 5000 6000 7000 8000 9000 9700 10000];
         
     % Set up pop up menu with pulldown data
         battery_cost_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
@@ -597,7 +597,7 @@ function The_Solar_Solution_GUI()
         end       
                 
 	% Dropdown list
-        roof_tilt = [0 5 10 15 20 25 30 35 40 45];
+        roof_tilt = [0 5 10 15 19 20 25 30 35 40 45];
 
     % Set up pop up menu with pulldown data
         tilt_popupmenu = uicontrol('Units', 'normalized', 'Position', [0.35 0.5 0.3 0.15], 'Style', 'popupmenu','Parent', TabHandles{prompt_page,1},...
@@ -1985,9 +1985,9 @@ function The_Solar_Solution_GUI()
                     number_people_input = 3; 
                     
                  %%% Change state
-                    state_input =  7000;    
+                    state_input =  4814;    
                  %%% Change Roof tilt
-                    roof_tilt_input = 12;                     
+                    roof_tilt_input = 19;                     
                     
                 % Set values on the GUI for display
                     set(pool_value, 'String', 'No')                   
